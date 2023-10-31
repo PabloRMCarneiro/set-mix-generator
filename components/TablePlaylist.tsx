@@ -40,6 +40,7 @@ export function TablePlaylist({
   // quando atualizar o localstorage, atualizar o userPlaylist
   useEffect(() => {
     setUserPlaylist(JSON.parse(localStorage.getItem("userPlaylist") || "[]"));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localStorage.getItem("userPlaylist")]);
 
   return (
