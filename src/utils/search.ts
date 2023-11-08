@@ -1,6 +1,41 @@
 import { AudioSearch } from "./types";
 import { handleAudioFeatures } from "./audioFeatures";
 
+// Função para buscar informações de uma faixa
+async function getTrackInfo(item: any, audioFeatures: any) {
+  return {
+    id: item.id,
+    thumbnail: item.album.images[2].url,
+    name: item.name,
+    artists: item.artists.map((artist: any) => artist.name).join(", "),
+    artists_ids: item.artists.map((artist: any) => artist.id),
+    BPM: audioFeatures.tempo,
+    key: audioFeatures.key,
+    mode: audioFeatures.mode,
+    preview_url: item.preview_url,
+    energy: audioFeatures.energy,
+    danceability: audioFeatures.danceability,
+    duration: audioFeatures.duration_ms,
+    instrumentalness: audioFeatures.instrumentalness,
+    valence: audioFeatures.valence,
+    popularity: item.popularity,
+  };
+}
+
+// Função para associar resultados da pesquisa de áudio com itens
+async function setAudioSearchForItems(
+  items: any,
+  audioFeaturesList: AudioSearch[],
+  setAudioSearch: Function
+) {
+  const trackInfos = await Promise.all(
+    items.map((item: any, index: number) =>
+      getTrackInfo(item, audioFeaturesList[index])
+    )
+  );
+  setAudioSearch(trackInfos as unknown as AudioSearch[]);
+}
+
 export const handleSearch = async (
   query: string,
   searchButton: boolean,
@@ -42,43 +77,11 @@ export const handleSearch = async (
       return;
     }
 
-    const ids = items.map((item: any) => item.id); // Extraia os IDs para passar como array
+    const ids = items.map((item: any) => item.id);
 
-    const audioFeaturesList = await handleAudioFeatures(ids, token); // Chame a função com um array de IDs
+    const audioFeaturesList = await handleAudioFeatures(ids, token);
 
-    async function getTrackInfo(item: any, audioFeatures: any) {
-      return {
-        id: item.id,
-        thumbnail: item.album.images[2].url,
-        name: item.name,
-        artists: item.artists.map((artist: any) => artist.name).join(", "),
-        artists_ids: item.artists.map((artist: any) => artist.id),
-        BPM: audioFeatures.tempo,
-        key: audioFeatures.key,
-        mode: audioFeatures.mode,
-        preview_url: item.preview_url,
-        energy: audioFeatures.energy,
-        danceability: audioFeatures.danceability,
-        duration: audioFeatures.duration_ms,
-        instrumentalness: audioFeatures.instrumentalness,
-        valence: audioFeatures.valence,
-        popularity: item.popularity,
-      };
-    }
-
-    async function setAudioSearchForItems(
-      items: any,
-      audioFeaturesList: AudioSearch[]
-    ) {
-      const trackInfos = await Promise.all(
-        items.map((item: any, index: number) =>
-          getTrackInfo(item, audioFeaturesList[index])
-        )
-      );
-      setAudioSearch(trackInfos as unknown as AudioSearch[]);
-    }
-
-    await setAudioSearchForItems(items, audioFeaturesList);
+    await setAudioSearchForItems(items, audioFeaturesList, setAudioSearch);
   } catch (error) {
     console.error(error);
     setError("Nenhum resultado encontrado.");

@@ -12,7 +12,7 @@ export default function Home() {
   const session = useSession();
   const router = useRouter();
   const handleLogin = () => {
-    signIn("spotify", { callbackUrl: "http://localhost:3000" });
+    signIn("spotify", { callbackUrl: "/" });
   };
 
  /*  if (session.status === "authenticated") {

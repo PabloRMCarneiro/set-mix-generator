@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions } from 'next-auth'
+import NextAuth, { AuthOptions } from 'next-auth'
 import { JWT } from 'next-auth/jwt';
 import SpotifyProvider from 'next-auth/providers/spotify'
 import axios from 'axios';
@@ -37,7 +37,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
 }
 
 
-export const authOptions: NextAuthOptions = {
+const authOptions: AuthOptions = {
   providers: [
     SpotifyProvider({
       clientId: process.env.SPOTIFY_CLIENT_ID as string,

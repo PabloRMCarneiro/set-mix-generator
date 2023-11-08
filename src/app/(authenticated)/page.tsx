@@ -147,7 +147,7 @@ export default function Home() {
           className="flex-grow justify-center items-center justify-center items-center"
           style={
             {
-              border: "1px solid red",
+              // border: "1px solid red",
             }
           }
         >

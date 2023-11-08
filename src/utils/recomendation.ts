@@ -7,6 +7,42 @@ import {
   s2c,
 } from "@/src/utils/commonFunctions";
 
+// Função para buscar informações de uma faixa
+async function getTrackInfo(item: any, audioFeatures: any) {
+  return {
+    id: item.id,
+    thumbnail: item.album.images[2].url,
+    name: item.name,
+    artists: item.artists.map((artist: any) => artist.name).join(", "),
+    artists_ids: item.artists.map((artist: any) => artist.id),
+    BPM: audioFeatures.tempo,
+    key: audioFeatures.key,
+    mode: audioFeatures.mode,
+    preview_url: item.preview_url,
+    energy: audioFeatures.energy,
+    danceability: audioFeatures.danceability,
+    duration: audioFeatures.duration_ms,
+    instrumentalness: audioFeatures.instrumentalness,
+    valence: audioFeatures.valence,
+    popularity: item.popularity,
+  };
+}
+
+// Função para associar recomendações de áudio com itens
+async function setAudioRecomendationForItems(
+  items: any,
+  audioFeaturesList: AudioSearch[],
+  setAudioRecomendation: Function
+) {
+  // Associa cada item com seus recursos de áudio correspondentes
+  const audioRecomendation = await Promise.all(
+    items.map((item: any, index: number) =>
+      getTrackInfo(item, audioFeaturesList[index])
+    )
+  );
+  setAudioRecomendation(audioRecomendation);
+}
+
 export const handleRecomendation = async (
   track: AudioSearch,
   typeMix: string,
@@ -18,7 +54,6 @@ export const handleRecomendation = async (
   setIsLoading: Function,
   setError: Function
 ) => {
-
   setIsLoading(true);
   setError(null);
 
@@ -66,49 +101,16 @@ export const handleRecomendation = async (
     const items = data.tracks;
 
     if (items.length === 0) {
-      setError("Nenhum resultado encontrado."); 
-      setIsLoading(false); 
+      setError("Nenhum resultado encontrado.");
+      setIsLoading(false);
       return;
     }
 
-    const ids = items.map((item: any) => item.id); 
+    const ids = items.map((item: any) => item.id);
 
     const audioFeaturesList = await handleAudioFeatures(ids, token);
 
-    async function getTrackInfo(item: any, audioFeatures: any) {
-      return {
-        id: item.id,
-        thumbnail: item.album.images[2].url,
-        name: item.name,
-        artists: item.artists.map((artist: any) => artist.name).join(", "),
-        artists_ids: item.artists.map((artist: any) => artist.id),
-        BPM: audioFeatures.tempo,
-        key: audioFeatures.key,
-        mode: audioFeatures.mode,
-        preview_url: item.preview_url,
-        energy: audioFeatures.energy,
-        danceability: audioFeatures.danceability,
-        duration: audioFeatures.duration_ms,
-        instrumentalness: audioFeatures.instrumentalness,
-        valence: audioFeatures.valence,
-        popularity: item.popularity,
-      };
-    }
-
-    async function setAudioRecomendationForItems(
-      items: any,
-      audioFeaturesList: AudioSearch[]
-    ) {
-      // Associa cada item com seus recursos de áudio correspondentes
-      const audioRecomendation = await Promise.all(
-        items.map((item: any, index: number) =>
-          getTrackInfo(item, audioFeaturesList[index])
-        )
-      );
-      setAudioRecomendation(audioRecomendation);
-    }
-
-    await setAudioRecomendationForItems(items, audioFeaturesList);
+    await setAudioRecomendationForItems(items, audioFeaturesList, setAudioRecomendation);
   } catch (error) {
     console.error(error);
     setError("Erro ao buscar recomendações"); // Definir mensagem de erro para falha na busca
