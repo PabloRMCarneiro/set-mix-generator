@@ -4,7 +4,7 @@ import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 
 import { useEffect, useRef, useState } from "react";
-import TableSearch  from "@/src/components/TableSearch";
+import TableSearch from "@/src/components/TableSearch";
 import TablePlaylist from "@/src/components/TablePlaylist";
 import { AudioSearch } from "@/src/utils/types";
 
@@ -20,6 +20,9 @@ import {
 } from "@radix-ui/react-icons";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Separator } from "@radix-ui/react-select";
+
+import { AccordionCharts } from "@/src/components/AcordionCharts";
 
 export default function Home() {
   const session = useSession();
@@ -99,18 +102,21 @@ export default function Home() {
     };
   }, []);
 
-  // quando atualizar o localstorage, atualizar o userPlaylist
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setUserPlaylist(JSON.parse(localStorage.getItem("userPlaylist") || "[]"));
+    function getPlaylist() {
+      return localStorage.getItem("userPlaylist") || "[]";
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [typeof window !== "undefined" ? localStorage.getItem("userPlaylist") : null]);
+  
+    if (typeof window !== "undefined") {
+      setUserPlaylist(JSON.parse(getPlaylist()));
+    }
+  }, []);
 
-  if (session.status === 'unauthenticated') {
+  if (session.status === "unauthenticated") {
     router.push("/login");
     return null;
   }
+  console.log(session);
 
   return (
     <>
@@ -136,13 +142,20 @@ export default function Home() {
           </div>
         </Alert>
       )}
-      <div className="h-screen flex flex-col items-center">
-        <div className="flex-grow justify-center items-center justify-center items-center">
-          <p className="text-center text-6xl tracking-wider font-black py-10">
+      <div className="flex flex-col items-center">
+        <div
+          className="flex-grow justify-center items-center justify-center items-center"
+          style={
+            {
+              border: "1px solid red",
+            }
+          }
+        >
+          <p className="text-center text-6xl tracking-wider font-black pt-24 pb-10">
             Set Mix Generator
           </p>
-          <div className="ps-20 flex space-x-10">
-            <div className="w-2/6 ml-14">
+          <div className="flex space-x-10 justify-center">
+            <div className=" ">
               <Input
                 type="text"
                 placeholder="Search song ..."
@@ -151,29 +164,38 @@ export default function Home() {
                 onChange={(e) => setSearchSong(e.target.value)}
               />
             </div>
-            <div className="w-[180px]">
-              <Button onClick={() => setSearchButton(true)}>Search</Button>
-            </div>
+            <Button onClick={() => setSearchButton(true)}>Search</Button>
           </div>
-          <div className="py-5">
-            <TableSearch
-              query={searchSong}
-              setSearchSong={setSearchSong}
-              searchButton={searchButton}
-              setSearchButton={setSearchButton}
-              setUserPlaylist={setUserPlaylist}
-              onPlayAudio={handleAudio}
-              setAudioSearch={setAudioSearch}
-              audioSearch={audioSearch}
-              userPlaylist={userPlaylist}
-            />
-            <TablePlaylist
-              setUserPlaylist={setUserPlaylist}
-              userPlaylist={userPlaylist}
-              onPlayAudio={handleAudio}
-            />
-          </div>
+          <TableSearch
+            query={searchSong}
+            setSearchSong={setSearchSong}
+            searchButton={searchButton}
+            setSearchButton={setSearchButton}
+            setUserPlaylist={setUserPlaylist}
+            onPlayAudio={handleAudio}
+            setAudioSearch={setAudioSearch}
+            audioSearch={audioSearch}
+            userPlaylist={userPlaylist}
+          />
         </div>
+        <div
+          className="w-6/12 mx-auto relative top-10"
+          style={
+            {
+              // border: "1px solid white",
+            }
+          }
+        >
+          <TablePlaylist
+            setUserPlaylist={setUserPlaylist}
+            userPlaylist={userPlaylist}
+            onPlayAudio={handleAudio}
+          />
+        </div>
+          <Separator className="my-14" />
+          <div className="w-7/12 mx-auto flex-grow justify-center items-center justify-center items-center">
+            <AccordionCharts userPlaylist={userPlaylist} />
+          </div>
       </div>
     </>
   );

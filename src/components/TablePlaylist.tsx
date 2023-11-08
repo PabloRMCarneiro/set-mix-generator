@@ -1,4 +1,3 @@
-
 import {
   Table,
   TableBody,
@@ -45,7 +44,6 @@ import {
 } from "react-beautiful-dnd";
 import { useNotifications } from "@/src/providers/NotificationContext";
 
-
 export default function TablePlaylist({
   setUserPlaylist,
   userPlaylist,
@@ -54,12 +52,11 @@ export default function TablePlaylist({
   userPlaylist: AudioSearch[];
   setUserPlaylist: Function;
   onPlayAudio: Function; // adicionado
-  }) {
-
+}) {
   const session = useSession();
   const { notify } = useNotifications();
-  const [notificationCreatePlaylist, setNotificationCreatePlaylist] = useState<string>("");
-  // pegar userPlaylist do localstorage
+  const [notificationCreatePlaylist, setNotificationCreatePlaylist] =
+    useState<string>("");
 
   const handleDeleteTrack = (track: AudioSearch) => () => {
     const newPlaylist = userPlaylist.filter((item) => item.id !== track.id);
@@ -80,10 +77,16 @@ export default function TablePlaylist({
         (session.data as any).accessToken,
         setNotificationCreatePlaylist
       );
-      notificationCreatePlaylist && notify(notificationCreatePlaylist, "success");
-      setNotificationCreatePlaylist('')
-      
+      notificationCreatePlaylist &&
+        notify(notificationCreatePlaylist, "success");
+      setNotificationCreatePlaylist("");
     }
+  };
+
+  const deleteAllSongs = () => {
+    setUserPlaylist([]);
+    if (typeof window !== "undefined")
+      localStorage.setItem("userPlaylist", JSON.stringify([]));
   };
 
   const handleOnDragEnd = useCallback(
@@ -100,13 +103,11 @@ export default function TablePlaylist({
     [userPlaylist, setUserPlaylist]
   );
 
-  var id: string = "";
-
   return (
     <>
-      <div className="fixed top-0 right-0 bottom-0 left-0 mx-auto mt-96">
+      <div className="mx-auto">
         <div
-          className="max-h-60 w-7/12 mx-auto mt-32 h-14 flex justify-between items-center"
+          className="max-h-60 w-auto mx-auto flex justify-between items-center"
           style={
             {
               // border: "1px solid red",
@@ -123,23 +124,53 @@ export default function TablePlaylist({
             />
             <div className="flex">
               <p className="text-sm opacity-70 mr-2">
-                {userPlaylist.length} Songs,{" "}
+                {userPlaylist !== null ? userPlaylist.length : 0} Songs,{" "}
               </p>
               <p className="text-sm opacity-70 mr-2">
-                {convertTime(
-                  userPlaylist.reduce((acc, curr) => acc + curr.duration, 0)
-                )}{" "}
+                {userPlaylist !== null
+                  ? convertTime(
+                      userPlaylist.reduce((acc, curr) => acc + curr.duration, 0)
+                    )
+                  : "0:00"}{" "}
                 Minutes,{" "}
               </p>
               <p className="text-sm opacity-70">
-                {Math.round(
-                  userPlaylist.reduce((acc, curr) => acc + curr.BPM, 0) /
-                    userPlaylist.length || 0
-                )}{" "}
+                {userPlaylist !== null
+                  ? Math.round(
+                      userPlaylist.reduce((acc, curr) => acc + curr.BPM, 0) /
+                        userPlaylist.length || 0
+                    )
+                  : 0}{" "}
                 BPM&apos;s Average
               </p>
             </div>
           </div>
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button className="flex items-center mr-5" variant="outline">
+                <span className="mr-2">
+                  <TrashIcon />
+                </span>
+                Clear All
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will remove all songs from
+                  your playlist.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={deleteAllSongs}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
           <Button className="flex items-center" onClick={handlePlaylist}>
             <span className="mr-2">
               <BsSpotify />
@@ -151,16 +182,17 @@ export default function TablePlaylist({
 
       <div
         style={{
-          width: "60%",
+          width: "auto",
           height: "38.5%",
           backgroundColor: "black",
           color: "white",
           overflowY: "auto",
           borderRadius: "1rem",
           background: "#040405ac",
-          marginTop: "37rem",
+          marginTop: "3rem",
+          display: userPlaylist !== null && userPlaylist.length === 0 ? "none" : "block",
         }}
-        className="elemento-com-scroll-vertical fixed top-0 right-0 bottom-0 left-0 mx-auto mt-96"
+        className="elemento-com-scroll-vertical mx-auto box-shadow2"
       >
         <Table className="max-h-60 w-full">
           <TableHeader>
@@ -180,7 +212,7 @@ export default function TablePlaylist({
             <Droppable droppableId="droppable">
               {(provided) => (
                 <TableBody ref={provided.innerRef} {...provided.droppableProps}>
-                  {userPlaylist.map((track, index) => (
+                  {userPlaylist !== null && userPlaylist.map((track, index) => (
                     <Draggable
                       key={track.id}
                       draggableId={track.id}

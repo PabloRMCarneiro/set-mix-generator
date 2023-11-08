@@ -13,4 +13,5 @@ export type AudioSearch = {
   duration: number; // rota de audio-features -> duration_ms
   instrumentalness: number; // rota de audio-features -> instrumentalness
   valence: number;
+  popularity: number;
 };

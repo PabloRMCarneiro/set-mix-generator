@@ -9,67 +9,68 @@
 
     --card: 0 0% 100%;
     --card-foreground: 20 14.3% 4.1%;
- 
+
     --popover: 0 0% 100%;
     --popover-foreground: 20 14.3% 4.1%;
- 
+
     --primary: 24 9.8% 10%;
     --primary-foreground: 60 9.1% 97.8%;
- 
+
     --secondary: 60 4.8% 95.9%;
     --secondary-foreground: 24 9.8% 10%;
- 
+
     --muted: 60 4.8% 95.9%;
     --muted-foreground: 25 5.3% 44.7%;
- 
+
     --accent: 60 4.8% 95.9%;
     --accent-foreground: 24 9.8% 10%;
- 
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 60 9.1% 97.8%;
 
     --border: 20 5.9% 90%;
     --input: 20 5.9% 90%;
     --ring: 20 14.3% 4.1%;
- 
+
     --radius: 0.5rem;
   }
- 
+
   .dark {
     --background: 20 14.3% 4.1%;
     --foreground: 60 9.1% 97.8%;
- 
+
     --card: 20 14.3% 4.1%;
     --card-foreground: 60 9.1% 97.8%;
- 
+
     --popover: 20 14.3% 4.1%;
     --popover-foreground: 60 9.1% 97.8%;
- 
+
     --primary: 60 9.1% 97.8%;
     --primary-foreground: 24 9.8% 10%;
- 
+
     --secondary: 12 6.5% 15.1%;
     --secondary-foreground: 60 9.1% 97.8%;
- 
+
     --muted: 12 6.5% 15.1%;
     --muted-foreground: 24 5.4% 63.9%;
- 
+
     --accent: 12 6.5% 15.1%;
     --accent-foreground: 60 9.1% 97.8%;
- 
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 60 9.1% 97.8%;
- 
+
     --border: 12 6.5% 15.1%;
     --input: 12 6.5% 15.1%;
     --ring: 24 5.7% 82.9%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -77,27 +78,33 @@
 
 /* Estilizando a barra de rolagem vertical */
 .elemento-com-scroll-vertical::-webkit-scrollbar {
-  width: 8px; /* Largura da barra de rolagem */
+  width: 8px;
+  /* Largura da barra de rolagem */
 }
 
 .elemento-com-scroll-vertical::-webkit-scrollbar-track {
-  background: transparent; /* Cor de fundo do track (fundo) */
+  background: transparent;
+  /* Cor de fundo do track (fundo) */
 }
 
 .elemento-com-scroll-vertical::-webkit-scrollbar-thumb {
-  background-color: rgb(184, 184, 184); /* Cor da barra de rolagem */
-  border-radius: 6px; /* Borda arredondada da barra de rolagem */
+  background-color: rgb(184, 184, 184);
+  /* Cor da barra de rolagem */
+  border-radius: 6px;
+  /* Borda arredondada da barra de rolagem */
 }
 
 /* Estilizando a barra de rolagem quando estiver sendo arrastada pelo mouse */
 .elemento-com-scroll-vertical::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(223, 223, 223); /* Cor da barra de rolagem ao passar o mouse */
+  background-color: rgb(223, 223, 223);
+  /* Cor da barra de rolagem ao passar o mouse */
 }
 
 @keyframes fadeOut {
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -105,4 +112,10 @@
 
 .notification-exit {
   animation: fadeOut 1s forwards;
+}
+
+.box-shadow2 {
+  box-shadow: 0px 1px 34px -3px rgba(255,255,255,0.05);
+-webkit-box-shadow: 0px 1px 34px -3px rgba(255,255,255,0.05);
+-moz-box-shadow: 0px 1px 34px -3px rgba(255,255,255,0.05);
 }

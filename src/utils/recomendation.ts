@@ -91,6 +91,7 @@ export const handleRecomendation = async (
         duration: audioFeatures.duration_ms,
         instrumentalness: audioFeatures.instrumentalness,
         valence: audioFeatures.valence,
+        popularity: item.popularity,
       };
     }
 

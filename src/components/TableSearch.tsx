@@ -61,13 +61,13 @@ export default function TableSearch({
       ) : audioSearch.length !== 0 && query !== "" ? (
         <div
           style={{
-            height: "13.5em",
+            height: "16.5em",
             color: "white",
             borderRadius: "1rem",
             background: "#040405ac",
             overflowY: "auto",
           }}
-          className="elemento-com-scroll-vertical overflow-y-scroll"
+          className="elemento-com-scroll-vertical mt-5"
         >
           <ShortTable
             setSearchSong={setSearchSong}

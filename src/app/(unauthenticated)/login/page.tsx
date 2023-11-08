@@ -15,10 +15,10 @@ export default function Home() {
     signIn("spotify", { callbackUrl: "http://localhost:3000" });
   };
 
-  if (session.status === "authenticated") {
+ /*  if (session.status === "authenticated") {
     router.push("/");
     return null;
-  }
+  } */
 
   return (
     <div className="relative isolate overflow-hidden bg-gray-900 sm:py-80" >

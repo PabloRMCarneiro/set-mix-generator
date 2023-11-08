@@ -12,7 +12,7 @@ import React from "react";
 
 function TableSkeleton() {
   return (
-    <Table className="max-h-60 w-full">
+    <Table className="max-h-60 w-full mt-5">
       <TableHeader>
         <TableRow>
           <TableHead></TableHead>

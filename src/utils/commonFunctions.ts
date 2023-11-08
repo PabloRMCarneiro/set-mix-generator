@@ -122,3 +122,54 @@ export const convertTime = (ms: number) => { // retornar {minutos, segundos}
   const seconds = ((ms % 60000) / 1000).toFixed(0);
   return `${minutes}:${Number(seconds) < 10 ? '0' : ''}${seconds}`;
 }
+
+
+export const structTypeOfMix = [
+  {
+    value: 'perfect-mix',
+    name: 'Perfect Mix',
+  },
+  {
+    value: 'minus-mix',
+    name: '-1 Mix',
+  },
+  {
+    value: 'plus-mix',
+    name: '+1 Mix',
+  },
+  {
+    value: 'energy-boost',
+    name: 'Energy Boost',
+  },
+  {
+    value: 'scale-change',
+    name: 'Scale Change',
+  },
+  {
+    value: 'diagonal-mix',
+    name: 'Diagonal Mix',
+  },
+  {
+    value: 'jaws-mix',
+    name: 'Jaw\'s Mix',
+  },
+]
+                  
+export const structTypeOfBPMRange = [
+  {
+    value: 'two',
+    name: '± 2 BPM',
+  },
+  {
+    value: 'five',
+    name: '± 5 BPM',
+  },
+  {
+    value: 'ten',
+    name: '± 10 BPM',
+  },
+  {
+    value: 'plus-ten',
+    name: '>± 10 BPM',
+  },
+]
