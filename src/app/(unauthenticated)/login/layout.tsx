@@ -1,12 +1,15 @@
-import "../../globals.css";
+import type { Metadata } from "next";
+import "@radix-ui/themes/styles.css";
+import '../../globals.css';
+
 import { NextAuthProvider } from "@/src/providers/NextAuthProvider";
-import { Montserrat } from "next/font/google";
+import { ThemeProvider } from "@/src/components/theme-provider";
+import { Theme } from "@radix-ui/themes";
 
-const fontFamily = Montserrat({ subsets: ["latin"] });
+import { NotificationProvider } from "@/src/providers/NotificationContext";
 
-export const metadata = {
-  title: "Login with Spotify",
-  description: "Login page to authenticate through Spotify",
+export const metadata: Metadata = {
+  title: "Set Mix Genearate",
 };
 
 export default function LoginPageLayout({
@@ -16,8 +19,21 @@ export default function LoginPageLayout({
 }) {
   return (
     <html lang="en">
-      <body className={fontFamily.className + " text-white bg-paper-700"}>
-        <NextAuthProvider>{children}</NextAuthProvider>
+      <body>
+        <main>
+          <NextAuthProvider>
+            <Theme>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="dark"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <NotificationProvider>{children}</NotificationProvider>
+              </ThemeProvider>
+            </Theme>
+          </NextAuthProvider>
+        </main>
       </body>
     </html>
   );

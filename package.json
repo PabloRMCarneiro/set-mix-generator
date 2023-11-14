@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/qs": "^6.9.10",
     "@types/react": "^18",
     "@types/react-beautiful-dnd": "^13.1.6",
     "@types/react-dom": "^18",
@@ -50,9 +51,9 @@
     "autoprefixer": "^10",
     "eslint": "^8",
     "eslint-config-next": "13.5.6",
+    "next": "^13.5.6",
     "postcss": "^8",
     "tailwindcss": "^3",
-    "typescript": "^5",
-    "next": "^13.5.6"
+    "typescript": "^5"
   }
 }

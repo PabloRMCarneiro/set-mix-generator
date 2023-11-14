@@ -5,36 +5,46 @@ import axios from 'axios';
 
 const scope = "playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-follow-modify"
 
+import qs from 'qs';
+
 async function refreshAccessToken(token: JWT): Promise<JWT> {
+  console.log('refreshAccessToken')
   try {
-    const basicAuth = Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString(
-      'base64'
-    )
-    const { data } = await axios.post(
-      process.env.SPOTIFY_REFRESH_TOKEN_URL as string,
-      {
-        grant_type: 'refresh_token',
-        refresh_token: token.refreshToken,
+    const url = process.env.SPOTIFY_REFRESH_TOKEN_URL;
+    const basicAuth = Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_SECRET_ID}`).toString('base64');
+
+    const body = qs.stringify({
+      grant_type: 'refresh_token',
+      refresh_token: token.refreshToken,
+      clientId: process.env.SPOTIFY_CLIENT_ID,
+    });
+
+    const { data } = await axios.post(url as string, body, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${basicAuth}`,
       },
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      }
-    )
+    });
+
+    if (!data.access_token) {
+      throw new Error('RefreshAccessTokenError');
+    }
+
     return {
       ...token,
       accessToken: data.access_token,
       accessTokenExpires: Date.now() + data.expires_in * 1000,
-    }
+      refreshToken: data.refresh_token ?? token.refreshToken,
+    };
   } catch (error) {
+    console.error(error);
     return {
       ...token,
       error: 'RefreshAccessTokenError',
-    }
+    };
   }
 }
+
 
 
 const authOptions: AuthOptions = {

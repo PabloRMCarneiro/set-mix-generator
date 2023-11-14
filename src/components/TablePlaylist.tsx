@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table,
   TableBody,
@@ -23,7 +25,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/src/components/ui/avatar";
-import { PlayIcon, TrashIcon } from "@radix-ui/react-icons";
+import { PlayIcon, TimerIcon, TrashIcon } from "@radix-ui/react-icons";
 import { BsSpotify } from "react-icons/bs";
 
 import { useEffect, useState, useCallback } from "react";
@@ -47,11 +49,13 @@ import { useNotifications } from "@/src/providers/NotificationContext";
 export default function TablePlaylist({
   setUserPlaylist,
   userPlaylist,
-  onPlayAudio, // adicionado
+  onPlayAudio,
+  audioRef,
 }: {
   userPlaylist: AudioSearch[];
   setUserPlaylist: Function;
-  onPlayAudio: Function; // adicionado
+  onPlayAudio: Function;
+  audioRef: React.MutableRefObject<HTMLAudioElement | null>;
 }) {
   const session = useSession();
   const { notify } = useNotifications();
@@ -103,6 +107,7 @@ export default function TablePlaylist({
     [userPlaylist, setUserPlaylist]
   );
 
+  const [hoverIndexRow, setHoverIndexRow] = useState<number>(-1);
   return (
     <>
       <div className="mx-auto">
@@ -190,20 +195,24 @@ export default function TablePlaylist({
           borderRadius: "1rem",
           background: "#040405ac",
           marginTop: "3rem",
-          display: userPlaylist !== null && userPlaylist.length === 0 ? "none" : "block",
+          display:
+            userPlaylist !== null && userPlaylist.length === 0
+              ? "none"
+              : "block",
         }}
         className="elemento-com-scroll-vertical mx-auto box-shadow2"
       >
         <Table className="max-h-60 w-full">
           <TableHeader>
             <TableRow>
-              <TableHead></TableHead>
+              <TableHead className="pl-5">#</TableHead>
               <TableHead>Thumbnail</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>BPM</TableHead>
               <TableHead>Key</TableHead>
               <TableHead>Energy</TableHead>
               <TableHead>Dance</TableHead>
+              <TableHead className="text-center">Duration</TableHead>
               <TableHead></TableHead>
               <TableHead></TableHead>
             </TableRow>
@@ -212,104 +221,115 @@ export default function TablePlaylist({
             <Droppable droppableId="droppable">
               {(provided) => (
                 <TableBody ref={provided.innerRef} {...provided.droppableProps}>
-                  {userPlaylist !== null && userPlaylist.map((track, index) => (
-                    <Draggable
-                      key={track.id}
-                      draggableId={track.id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <TableRow
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          key={track.id}
-                        >
-                          <TableCell>
-                            {track.preview_url ? (
-                              <PlayIcon
-                                className="w-10 hover:cursor-pointer"
-                                onClick={() => onPlayAudio(track.preview_url)}
+                  {userPlaylist !== null &&
+                    userPlaylist.map((track, index) => (
+                      <Draggable
+                        key={track.id}
+                        draggableId={track.id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <TableRow
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            key={track.id}
+                            onMouseEnter={() => setHoverIndexRow(index)}
+                            onMouseLeave={() => setHoverIndexRow(-1)}
+                          >
+                            <TableCell className="pl-5">
+                              {hoverIndexRow === index ? (
+                                <PlayIcon
+                                  className="hover:cursor-pointer"
+                                  onClick={() => onPlayAudio(track.preview_url)}
+                                />
+                              ) : (
+                                index + 1
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              <Avatar>
+                                <AvatarImage
+                                  src={track.thumbnail}
+                                  alt={track.name}
+                                  loading="lazy"
+                                />
+                                <AvatarFallback>CN</AvatarFallback>
+                              </Avatar>
+                            </TableCell>
+                            <TableCell>
+                              <div>
+                                <p>
+                                  {track.name.length > 60
+                                    ? track.name.slice(0, 60) + "..."
+                                    : track.name}
+                                </p>
+                                <p className="opacity-50">
+                                  {track.artists.length > 60
+                                    ? track.artists.slice(0, 60) + "..."
+                                    : track.artists}
+                                </p>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-center w-3">
+                              {Math.round(track.BPM)}
+                            </TableCell>
+                            <TableCell className="text-center w-3">
+                              {spotify2Camelot(track.key, track.mode)}
+                            </TableCell>
+                            <TableCell className="text-center w-3">
+                              {(track.energy * 100).toFixed(1)}
+                            </TableCell>
+                            <TableCell className="text-center w-3">
+                              {(track.danceability * 100).toFixed(1)}
+                            </TableCell>
+                            <TableCell className="text-center w-3">
+                              {convertTime(track.duration)}
+                            </TableCell>
+                            <TableCell className="text-center">
+                              <MagicDialog
+                                track={track}
+                                userPlaylist={userPlaylist}
+                                setUserPlaylist={setUserPlaylist}
+                                onPlayAudio={onPlayAudio}
                               />
-                            ) : (
-                              <PlayIcon className="w-10 opacity-20 hover:cursor-not-allowed" />
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            <Avatar>
-                              <AvatarImage
-                                src={track.thumbnail}
-                                alt={track.name}
-                              />
-                              <AvatarFallback>CN</AvatarFallback>
-                            </Avatar>
-                          </TableCell>
-                          <TableCell>
-                            <div>
-                              <p>
-                                {track.name.length > 60
-                                  ? track.name.slice(0, 60) + "..."
-                                  : track.name}
-                              </p>
-                              <p className="opacity-50">
-                                {track.artists.length > 60
-                                  ? track.artists.slice(0, 60) + "..."
-                                  : track.artists}
-                              </p>
-                            </div>
-                          </TableCell>
-                          <TableCell>{Math.round(track.BPM)}</TableCell>
-                          <TableCell>
-                            {spotify2Camelot(track.key, track.mode)}
-                          </TableCell>
-                          <TableCell>
-                            {(track.energy * 100).toFixed(1)}
-                          </TableCell>
-                          <TableCell>
-                            {(track.danceability * 100).toFixed(1)}
-                          </TableCell>
-                          <TableCell>
-                            <MagicDialog
-                              track={track}
-                              userPlaylist={userPlaylist}
-                              setUserPlaylist={setUserPlaylist}
-                              onPlayAudio={onPlayAudio}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <AlertDialog>
-                              <AlertDialogTrigger>
-                                <TrashIcon />
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>
-                                    Are you absolutely sure?
-                                  </AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    This action cannot be undone. This will
-                                    remove{" "}
-                                    <span className="font-bold">
-                                      {track.name}
-                                    </span>{" "}
-                                    from your playlist.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction
-                                    onClick={handleDeleteTrack(track)}
-                                  >
-                                    Continue
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </Draggable>
-                  ))}
+                            </TableCell>
+                            <TableCell >
+                              <AlertDialog>
+                                <AlertDialogTrigger>
+                                  <TrashIcon />
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                      Are you absolutely sure?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This action cannot be undone. This will
+                                      remove{" "}
+                                      <span className="font-bold">
+                                        {track.name}
+                                      </span>{" "}
+                                      from your playlist.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                      Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={handleDeleteTrack(track)}
+                                    >
+                                      Continue
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </Draggable>
+                    ))}
                   {provided.placeholder}
                 </TableBody>
               )}

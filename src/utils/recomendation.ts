@@ -28,13 +28,11 @@ async function getTrackInfo(item: any, audioFeatures: any) {
   };
 }
 
-// Função para associar recomendações de áudio com itens
 async function setAudioRecomendationForItems(
   items: any,
   audioFeaturesList: AudioSearch[],
   setAudioRecomendation: Function
 ) {
-  // Associa cada item com seus recursos de áudio correspondentes
   const audioRecomendation = await Promise.all(
     items.map((item: any, index: number) =>
       getTrackInfo(item, audioFeaturesList[index])
@@ -48,7 +46,7 @@ export const handleRecomendation = async (
   typeMix: string,
   BPMRange: string,
   token: string,
-  featuresSliders: number[][],
+  featuresSliders: [[number], boolean][],
   userPlaylist: AudioSearch[],
   setAudioRecomendation: Function,
   setIsLoading: Function,
@@ -70,10 +68,15 @@ export const handleRecomendation = async (
 
   const min_tempo = track.BPM + typeOfBPMRange[BPMRange]()[0];
   const max_tempo = track.BPM + typeOfBPMRange[BPMRange]()[1];
-  const targetEnergy = featuresSliders[0][0];
-  const targetDanceability = featuresSliders[1][0];
-  const targetInstrumentalness = featuresSliders[2][0];
-  const targetValence = featuresSliders[3][0];
+
+  const [
+    targetEnergy,
+    targetDanceability,
+    targetInstrumentalness,
+    targetValence,
+    targetPopularity,
+  ] = featuresSliders.map((item) => [item[0], item[1]]);
+
   const aux = userPlaylist.findIndex((item) => item.id === track.id);
   const seedsTracks =
     aux > 4
@@ -88,7 +91,17 @@ export const handleRecomendation = async (
 
   try {
     const response = await fetch(
-      `https://api.spotify.com/v1/recommendations?seed_tracks=${seedsTracks}&target_key=${targetKey}&target_mode=${targetMode}&min_tempo=${min_tempo}&max_tempo=${max_tempo}&target_energy=${targetEnergy}&target_danceability=${targetDanceability}&target_instrumentalness=${targetInstrumentalness}&target_valence=${targetValence}`,
+      `https://api.spotify.com/v1/recommendations?seed_tracks=${seedsTracks}&target_key=${targetKey}&target_mode=${targetMode}&min_tempo=${min_tempo}&max_tempo=${max_tempo}${targetEnergy[1] ? `&target_energy=${targetEnergy[0]}` : ""}${
+        targetDanceability[1]
+          ? `&target_danceability=${targetDanceability[0]}`
+          : ""
+      }${
+        targetInstrumentalness[1]
+          ? `&target_instrumentalness=${targetInstrumentalness[0]}`
+          : ""
+      }${targetValence[1] ? `&target_valence=${targetValence[0]}` : ""}${
+        targetPopularity[1] ? `&target_popularity=${targetPopularity[0]*100}` : ""
+      }`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -100,17 +113,21 @@ export const handleRecomendation = async (
     const data = await response.json();
     const items = data.tracks;
 
-    if (items.length === 0) {
+    if (items && items.length === 0) {
       setError("Nenhum resultado encontrado.");
       setIsLoading(false);
       return;
     }
 
-    const ids = items.map((item: any) => item.id);
+    const ids = items && items.map((item: any) => item.id);
 
     const audioFeaturesList = await handleAudioFeatures(ids, token);
 
-    await setAudioRecomendationForItems(items, audioFeaturesList, setAudioRecomendation);
+    await setAudioRecomendationForItems(
+      items,
+      audioFeaturesList,
+      setAudioRecomendation
+    );
   } catch (error) {
     console.error(error);
     setError("Erro ao buscar recomendações"); // Definir mensagem de erro para falha na busca

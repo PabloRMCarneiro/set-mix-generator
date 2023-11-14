@@ -16,7 +16,7 @@ export default function ChartFeatures({
 }: {
   userPlaylist: AudioSearch[];
 }) {
-  // pegar a enerfy da userPlaylist e colocar em um array data
+  // pegar a energy da userPlaylist e colocar em um array data
   const data = userPlaylist.map((track, index) => {
     return {
       index: index + 1,
@@ -30,47 +30,47 @@ export default function ChartFeatures({
 
   return (
     <>
-      <LineChart
-        width={data.length * 50 > 1100 ? data.length * 50 : 1100}
-        height={400}
-        data={data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="index" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Line
-          type="monotone"
-          dataKey="energy"
-          stroke="#38d845"
-          strokeWidth={3}
-        />
-        <Line
-          type="monotone"
-          dataKey="dance"
-          stroke="#d84338"
-          strokeWidth={3}
-        />
-        <Line
-          type="monotone"
-          dataKey="instrumentalness"
-          stroke="#d8d538"
-          strokeWidth={1}
-        />
-        <Line
-          type="monotone"
-          dataKey="valence"
-          stroke="#d838d8"
-          strokeWidth={1}
-        />
-      </LineChart>
+      <ResponsiveContainer width="100%" aspect={4.0 / 2.0}>
+        <LineChart
+          data={data}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="index" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line
+            type="monotone"
+            dataKey="energy"
+            stroke="#38d845"
+            strokeWidth={3}
+          />
+          <Line
+            type="monotone"
+            dataKey="dance"
+            stroke="#d84338"
+            strokeWidth={3}
+          />
+          <Line
+            type="monotone"
+            dataKey="instrumentalness"
+            stroke="#d8d538"
+            strokeWidth={1}
+          />
+          <Line
+            type="monotone"
+            dataKey="valence"
+            stroke="#d838d8"
+            strokeWidth={1}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </>
   );
 }

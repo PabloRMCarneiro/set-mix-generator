@@ -44,7 +44,6 @@ export default function Home() {
   const { notification } = useNotifications();
 
   const handleAudio = (url: string) => {
-    // verificar se a url ainda tem no userPlaylist ( pq se o usuário deletar enquanto toca o preview é pra parar de tocar)
 
     // Se clicar no mesmo áudio que já está tocando
     if (playingURL === url) {
@@ -179,7 +178,7 @@ export default function Home() {
           />
         </div>
         <div
-          className="w-6/12 mx-auto relative top-10"
+          className="w-9/12 mx-auto relative top-10"
           style={
             {
               // border: "1px solid white",
@@ -190,12 +189,13 @@ export default function Home() {
             setUserPlaylist={setUserPlaylist}
             userPlaylist={userPlaylist}
             onPlayAudio={handleAudio}
+            audioRef={audioRef}
           />
         </div>
           <Separator className="my-14" />
           <div className="w-7/12 mx-auto flex-grow justify-center items-center justify-center items-center">
             <AccordionCharts userPlaylist={userPlaylist} />
-          </div>
+        </div>
       </div>
     </>
   );

@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useState, useRef } from "react";
 import { useSession } from "next-auth/react";
 
@@ -48,9 +50,11 @@ export default function TableSearch({
       notify("Please, type a song name to search", "error");
       setSearchButton(false);
       setAudioSearch([]);
+    } else {
+      setSearchButton(false);
+      setAudioSearch([]);
     }
-  }, [searchButton, query, session, setSearchButton, setAudioSearch, notify]);
-
+  }, [searchButton, query, session.data, setSearchButton, setAudioSearch, notify]);
 
   return (
     <>
@@ -82,4 +86,3 @@ export default function TableSearch({
     </>
   );
 }
-

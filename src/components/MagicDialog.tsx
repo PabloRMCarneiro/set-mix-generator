@@ -60,13 +60,12 @@ export default function MagicDialog({
 
   const [typeMix, setTypeMix] = useState<string>("perfect-mix");
   const [BPMRange, setBPMRange] = useState<string>("two");
-  const [featuresSliders, setFeaturesSliders] = useState<number[][]>([
-    [0.5],
-    [0.5],
-    [0.5],
-    [0.5],
-    [0.5],
-    [0.5],
+  const [featuresSliders, setFeaturesSliders] = useState<[[number], boolean][]>([
+    [[0.5], false],
+    [[0.5], false],
+    [[0.5], false],
+    [[0.5], false],
+    [[0.5], false],
   ]);
 
   return (
@@ -80,7 +79,7 @@ export default function MagicDialog({
           style={{
             height: "auto",
             minHeight: "6rem",
-            width: "48rem",
+            width: "40rem",
             overflowY: "scroll",
             overflowX: "hidden",
             borderRadius: "1rem",
@@ -88,7 +87,7 @@ export default function MagicDialog({
             display: "block",
           }}
         >
-          <div className="flex justify-center pt-2 w-full  mb-5">
+          <div className="flex justify-center pt-8 w-full  mb-5">
             <SelectRecomdations
               data={structTypeOfMix}
               placeholder="Mix"
@@ -144,7 +143,7 @@ export default function MagicDialog({
                 onPlayAudio={onPlayAudio}
                 userPlaylist={userPlaylist}
                 setUserPlaylist={setUserPlaylist}
-                name_delimiter={27}
+                name_delimiter={15}
                 current_track={track}
               />
             </div>

@@ -119,7 +119,11 @@ function ShortTable({
               </TableCell>
               <TableCell>
                 <Avatar>
-                  <AvatarImage src={track.thumbnail} alt={track.name} />
+                  <AvatarImage
+                    src={track.thumbnail}
+                    alt={track.name}
+                    loading="lazy"
+                  />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </TableCell>
