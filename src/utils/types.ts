@@ -14,4 +14,6 @@ export type AudioSearch = {
   instrumentalness: number; // rota de audio-features -> instrumentalness
   valence: number;
   popularity: number;
+  origen: boolean;
+  spotify_link: string;
 };

@@ -16,6 +16,7 @@ import {
   featuresChoseNamesDesciptions,
 } from "../utils/commonFunctions";
 import { Separator } from "@radix-ui/react-select";
+import { TooltipGeneral } from "./TooltipGeneral";
 
 function SlidersFeatures({
   featuresSliders,
@@ -47,7 +48,10 @@ function SlidersFeatures({
     <div className="w-32">
       <DropdownMenu>
         <DropdownMenuTrigger className="">
-          <Button variant="outline">Audio Features </Button>
+          <TooltipGeneral
+            description=" You may further refine your search by setting audio feature values. Setting a target value will prioritize results closer to the target. "
+            component={<Button variant="outline">Audio Features</Button>}
+          />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <div

@@ -121,7 +121,7 @@ export default function Home() {
     <>
       {notification && (
         <Alert
-          className={`fixed right-6 bottom-10 w-80 ${
+          className={`fixed right-6 bottom-10 w-80 z-40 ${
             notification.type === "success"
               ? "bg-green-500"
               : notification.type === "error"
@@ -129,7 +129,7 @@ export default function Home() {
               : "bg-blue-500"
           }`}
         >
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 z-40">
             {notification.type === "success" ? (
               <CheckIcon />
             ) : notification.type === "error" ? (
@@ -178,7 +178,7 @@ export default function Home() {
           />
         </div>
         <div
-          className="w-9/12 mx-auto relative top-10"
+          className="w-6/12 mx-auto relative top-10"
           style={
             {
               // border: "1px solid white",

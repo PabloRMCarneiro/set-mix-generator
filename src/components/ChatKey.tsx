@@ -29,34 +29,36 @@ export default function ChartKey({
 
   return (
     <>
-      <LineChart
-        width={data.length * 50 > 1100 ? data.length * 50 : 1100}
-        height={400}
-        data={data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="index" />
-        <YAxis />
-        <Tooltip
-          formatter={(value: any, name: any, props: any) => {
-            return props.payload.mode ? `${value}B`: `${value}A` ;
+      <ResponsiveContainer width="100%" aspect={4.0 / 2.0}>
+        <LineChart
+          width={data.length * 50 > 1100 ? data.length * 50 : 1100}
+          height={400}
+          data={data}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
           }}
-        />
-        <Legend />
-        <Line
-          type="monotone"
-          dataKey="Key"
-          stroke="#3843d8"
-          strokeWidth={3}
-          legendType="rect"
-        />
-      </LineChart>
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="index" />
+          <YAxis />
+          <Tooltip
+            formatter={(value: any, name: any, props: any) => {
+              return props.payload.mode ? `${value}B` : `${value}A`;
+            }}
+          />
+          <Legend />
+          <Line
+            type="monotone"
+            dataKey="Key"
+            stroke="#3843d8"
+            strokeWidth={3}
+            legendType="rect"
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </>
   );
 }

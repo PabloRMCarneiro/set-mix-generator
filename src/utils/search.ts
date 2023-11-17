@@ -19,6 +19,8 @@ async function getTrackInfo(item: any, audioFeatures: any) {
     instrumentalness: audioFeatures.instrumentalness,
     valence: audioFeatures.valence,
     popularity: item.popularity,
+    origin: false,
+    spotify_link: item.external_urls.spotify,
   };
 }
 
@@ -43,7 +45,8 @@ export const handleSearch = async (
   setSearchButton: Function,
   setAudioSearch: Function,
   setIsLoading: Function,
-  setError: Function
+  setError: Function,
+  type?: string,
 ) => {
   if (query === "" || searchButton === false) {
     setError("Preencha todos os campos");
@@ -59,7 +62,7 @@ export const handleSearch = async (
       `https://api.spotify.com/v1/search?q=${query.replaceAll(
         " ",
         "+"
-      )}&type=track`,
+      )}&type=${type ? type : 'track'}&limit=50`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -69,6 +72,12 @@ export const handleSearch = async (
     );
 
     const data = await result.json();
+    
+    if (type === 'artist') {
+      setAudioSearch(data.artists.items);
+      return;
+    } 
+
     const items = data.tracks.items;
 
     if (items.length === 0) {
@@ -76,6 +85,7 @@ export const handleSearch = async (
       setIsLoading(false);
       return;
     }
+
 
     const ids = items.map((item: any) => item.id);
 

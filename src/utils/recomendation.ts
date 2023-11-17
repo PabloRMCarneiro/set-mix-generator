@@ -25,6 +25,8 @@ async function getTrackInfo(item: any, audioFeatures: any) {
     instrumentalness: audioFeatures.instrumentalness,
     valence: audioFeatures.valence,
     popularity: item.popularity,
+    origen: true,
+    spotify_link: item.external_urls.spotify,
   };
 }
 
@@ -91,7 +93,7 @@ export const handleRecomendation = async (
 
   try {
     const response = await fetch(
-      `https://api.spotify.com/v1/recommendations?seed_tracks=${seedsTracks}&target_key=${targetKey}&target_mode=${targetMode}&min_tempo=${min_tempo}&max_tempo=${max_tempo}${targetEnergy[1] ? `&target_energy=${targetEnergy[0]}` : ""}${
+      `https://api.spotify.com/v1/recommendations?seed_tracks=${seedsTracks}&limit=100&target_key=${targetKey}&target_mode=${targetMode}&min_tempo=${min_tempo}&max_tempo=${max_tempo}${targetEnergy[1] ? `&target_energy=${targetEnergy[0]}` : ""}${
         targetDanceability[1]
           ? `&target_danceability=${targetDanceability[0]}`
           : ""
@@ -100,7 +102,7 @@ export const handleRecomendation = async (
           ? `&target_instrumentalness=${targetInstrumentalness[0]}`
           : ""
       }${targetValence[1] ? `&target_valence=${targetValence[0]}` : ""}${
-        targetPopularity[1] ? `&target_popularity=${targetPopularity[0]*100}` : ""
+        targetPopularity[1] ? `&target_popularity=${Number(targetPopularity[0])*100}` : ""
       }`,
       {
         headers: {

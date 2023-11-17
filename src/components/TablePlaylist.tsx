@@ -25,7 +25,16 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/src/components/ui/avatar";
-import { PlayIcon, TimerIcon, TrashIcon } from "@radix-ui/react-icons";
+import {
+  AccessibilityIcon,
+  LightningBoltIcon,
+  PlayIcon,
+  RocketIcon,
+  StarFilledIcon,
+  TargetIcon,
+  TimerIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
 import { BsSpotify } from "react-icons/bs";
 
 import { useEffect, useState, useCallback } from "react";
@@ -34,7 +43,11 @@ import { v4 as uuidv4 } from "uuid";
 import { AudioSearch } from "@/src/utils/types";
 
 import MagicDialog from "@/src/components/MagicDialog";
-import { convertTime, spotify2Camelot } from "@/src/utils/commonFunctions";
+import {
+  convertTime,
+  featuresChoseNamesDesciptions,
+  spotify2Camelot,
+} from "@/src/utils/commonFunctions";
 import { Button } from "./ui/button";
 import { handleCreatePlaylist } from "@/src/utils/createPlaylist";
 
@@ -45,6 +58,10 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { useNotifications } from "@/src/providers/NotificationContext";
+
+import { SiBytedance, SiSpotify } from "react-icons/si";
+import { TooltipGeneral } from "./TooltipGeneral";
+import Link from "next/link";
 
 export default function TablePlaylist({
   setUserPlaylist,
@@ -209,10 +226,41 @@ export default function TablePlaylist({
               <TableHead>Thumbnail</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>BPM</TableHead>
-              <TableHead>Key</TableHead>
-              <TableHead>Energy</TableHead>
-              <TableHead>Dance</TableHead>
-              <TableHead className="text-center">Duration</TableHead>
+              <TableHead className="pr-5">Key</TableHead>
+              <TableHead className="pl-4">
+                <TooltipGeneral
+                  description={featuresChoseNamesDesciptions[0]}
+                  component={<LightningBoltIcon />}
+                />
+              </TableHead>
+              <TableHead className="pl-4">
+                <TooltipGeneral
+                  description={featuresChoseNamesDesciptions[1]}
+                  component={<AccessibilityIcon />}
+                />
+              </TableHead>
+              <TableHead className="pl-4">
+                <TooltipGeneral
+                  description={featuresChoseNamesDesciptions[2]}
+                  component={<TargetIcon />}
+                />
+              </TableHead>
+              <TableHead className="pl-4">
+                <TooltipGeneral
+                  description={featuresChoseNamesDesciptions[3]}
+                  component={<RocketIcon />}
+                />
+              </TableHead>
+              <TableHead className="pl-5">
+                <TooltipGeneral
+                  description={featuresChoseNamesDesciptions[4]}
+                  component={<StarFilledIcon />}
+                />
+              </TableHead>
+              <TableHead className="pl-4">
+                <TimerIcon />
+              </TableHead>
+              <TableHead className="pl-10"></TableHead>
               <TableHead></TableHead>
               <TableHead></TableHead>
             </TableRow>
@@ -236,18 +284,25 @@ export default function TablePlaylist({
                             key={track.id}
                             onMouseEnter={() => setHoverIndexRow(index)}
                             onMouseLeave={() => setHoverIndexRow(-1)}
+                            className={(track.origen ? "" : "")}
                           >
-                            <TableCell className="pl-5">
+                            <TableCell className="pl-5 w-12">
                               {hoverIndexRow === index ? (
-                                <PlayIcon
-                                  className="hover:cursor-pointer"
-                                  onClick={() => onPlayAudio(track.preview_url)}
-                                />
+                                track.preview_url ? (
+                                  <PlayIcon
+                                    className="hover:cursor-pointer"
+                                    onClick={() =>
+                                      onPlayAudio(track.preview_url)
+                                    }
+                                  />
+                                ) : (
+                                  <PlayIcon className="hover:cursor-not-allowed opacity-50" />
+                                )
                               ) : (
                                 index + 1
                               )}
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="w-10">
                               <Avatar>
                                 <AvatarImage
                                   src={track.thumbnail}
@@ -259,7 +314,7 @@ export default function TablePlaylist({
                             </TableCell>
                             <TableCell>
                               <div>
-                                <p>
+                                <p className="font-extrabold">
                                   {track.name.length > 60
                                     ? track.name.slice(0, 60) + "..."
                                     : track.name}
@@ -271,22 +326,31 @@ export default function TablePlaylist({
                                 </p>
                               </div>
                             </TableCell>
-                            <TableCell className="text-center w-3">
+                            <TableCell className="text-center w-3 font-bold">
                               {Math.round(track.BPM)}
                             </TableCell>
-                            <TableCell className="text-center w-3">
+                            <TableCell className="text-center w-3 font-bold pr-5">
                               {spotify2Camelot(track.key, track.mode)}
                             </TableCell>
-                            <TableCell className="text-center w-3">
+                            <TableCell className="text-center w-3 opacity-80">
                               {(track.energy * 100).toFixed(1)}
                             </TableCell>
-                            <TableCell className="text-center w-3">
+                            <TableCell className="text-center w-3 opacity-80">
                               {(track.danceability * 100).toFixed(1)}
                             </TableCell>
-                            <TableCell className="text-center w-3">
+                            <TableCell className="text-center w-3 opacity-80">
+                              {(track.instrumentalness * 100).toFixed(1)}
+                            </TableCell>
+                            <TableCell className="text-center w-3 opacity-80">
+                              {(track.valence * 100).toFixed(1)}
+                            </TableCell>
+                            <TableCell className="text-center w-3 pl-5 font-bold">
+                              {track.popularity}
+                            </TableCell>
+                            <TableCell className="text-center w-3 font-bold">
                               {convertTime(track.duration)}
                             </TableCell>
-                            <TableCell className="text-center">
+                            <TableCell className="text-center pl-10">
                               <MagicDialog
                                 track={track}
                                 userPlaylist={userPlaylist}
@@ -294,7 +358,7 @@ export default function TablePlaylist({
                                 onPlayAudio={onPlayAudio}
                               />
                             </TableCell>
-                            <TableCell >
+                            <TableCell>
                               <AlertDialog>
                                 <AlertDialogTrigger>
                                   <TrashIcon />
@@ -325,6 +389,13 @@ export default function TablePlaylist({
                                   </AlertDialogFooter>
                                 </AlertDialogContent>
                               </AlertDialog>
+                            </TableCell>
+                            <TableCell className="justify-center my-auto">
+                              <SiSpotify
+                                onClick={() =>
+                                  window.open(track.spotify_link, "_blank")
+                                }
+                              />
                             </TableCell>
                           </TableRow>
                         )}

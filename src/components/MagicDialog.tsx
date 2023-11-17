@@ -1,21 +1,9 @@
-import {
-  MagicWandIcon,
-  MagnifyingGlassIcon,
-  ReloadIcon,
-} from "@radix-ui/react-icons";
+import { MagicWandIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
 } from "@/src/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
 
 import TableSkeleton from "./TableSkeleton";
 import { Separator } from "@radix-ui/react-select";
@@ -34,6 +22,18 @@ import {
   structTypeOfBPMRange,
 } from "../utils/commonFunctions";
 import SelectRecomdations from "./SelectRecomdations";
+import SearchUserSeeds from "./SearchUserSeeds";
+import { TooltipGeneral } from "./TooltipGeneral";
+
+export type Seeds = {
+  seeds_artists: string[];
+  seeds_tracks: string[];
+};
+
+export type SeedsIntern = {
+  ids: string[];
+  thumbs: string[];
+};
 
 export default function MagicDialog({
   track,
@@ -53,20 +53,28 @@ export default function MagicDialog({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<any>(null);
 
-  // chamar a função que desenvolve o algoritmo que recomenda os melhores atributos das a partir das ultimas musicas
-
-  // a função vai precisar do index da track para verificar quais as ultimas musicas que foram adicionadas
-  // assim, essa irá retornar uma array de atributos por ordem que serpa setado no featuresSliders como os valores iniciais -> e coloridos de alguma cor para indicar que house a recomendação dessas features -> assim que o usuário mover algum slider ela irá mudar para cor default ( branca )
-
   const [typeMix, setTypeMix] = useState<string>("perfect-mix");
   const [BPMRange, setBPMRange] = useState<string>("two");
-  const [featuresSliders, setFeaturesSliders] = useState<[[number], boolean][]>([
-    [[0.5], false],
-    [[0.5], false],
-    [[0.5], false],
-    [[0.5], false],
-    [[0.5], false],
-  ]);
+  const [featuresSliders, setFeaturesSliders] = useState<[[number], boolean][]>(
+    [
+      [[0.5], false],
+      [[0.5], false],
+      [[0.5], false],
+      [[0.5], false],
+      [[0.5], false],
+    ]
+  );
+
+  const [userSeeds, setUserSeeds] = useState<Seeds>({
+    seeds_artists: [],
+    seeds_tracks: [],
+  });
+
+  const [seeds, setSeeds] = useState<SeedsIntern>({
+    ids: [],
+    thumbs: [],
+  });
+
 
   return (
     <DropdownMenu>
@@ -79,7 +87,7 @@ export default function MagicDialog({
           style={{
             height: "auto",
             minHeight: "6rem",
-            width: "40rem",
+            width: "52rem",
             overflowY: "scroll",
             overflowX: "hidden",
             borderRadius: "1rem",
@@ -87,13 +95,13 @@ export default function MagicDialog({
             display: "block",
           }}
         >
-          <div className="flex justify-center pt-8 w-full  mb-5">
+          <div className="flex justify-center pt-8  mb-5">
             <SelectRecomdations
               data={structTypeOfMix}
               placeholder="Mix"
               handlerValueChange={setTypeMix}
             />
-            <Separator className="mx-2" />
+            <Separator className="mx-3" />
             <SlidersFeatures
               featuresSliders={featuresSliders}
               setFeaturesSliders={setFeaturesSliders}
@@ -104,6 +112,9 @@ export default function MagicDialog({
               placeholder="BPM Range"
               handlerValueChange={setBPMRange}
             />
+            <Separator className="mx-3" />
+            <SearchUserSeeds seeds={seeds} setSeeds={setSeeds} />
+
             <Separator className="mx-3" />
             <Button
               onClick={() =>

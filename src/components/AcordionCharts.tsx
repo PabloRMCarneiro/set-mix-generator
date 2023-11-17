@@ -23,7 +23,7 @@ export function AccordionCharts({
   return (
     <>
       {userPlaylist !== null && userPlaylist.length >= 5 ? (
-        <Accordion type="multiple" className="w-full text-center">
+        <Accordion type="multiple" className="w-10/12 mx-auto text-center">
           <AccordionItem value="item-1">
             <AccordionTrigger>Features Chart</AccordionTrigger>
             <AccordionContent>
