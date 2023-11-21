@@ -1,24 +1,34 @@
-export const getAllMyPLaylists = async (token: string, setMyPlaylist: Function) => {
+export const getAllMyPLaylists = async (token: string, setMyPlaylist: Function, setIsLoading: Function) => {
 
-  const userId = await getUserId(token);
+  setIsLoading(true); // Start loading
   
-  // if playlists quantity is greater than 50, we need to make more than one request
-  const response = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists?limit=50`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  try {
+    const userId = await getUserId(token);
+    
+    // if playlists quantity is greater than 50, we need to make more than one request
+    const response = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists?limit=50`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  if (!response.ok) {
-    throw new Error("Erro ao obter as playlists do usuário");
+    if (!response.ok) {
+      throw new Error("Erro ao obter as playlists do usuário");
+    }
+
+    const data = await response.json();
+    const playlists = data.items;
+
+    const editablePlaylists = playlists.filter((playlist: any) => 
+      playlist.owner.id === userId || playlist.collaborative
+    );
+    setMyPlaylist(editablePlaylists);
+  } catch (error) {
+    console.error(error);
+    // Handle the error state if needed
+  } finally {
+    setIsLoading(false); // End loading
   }
-
-  const data = await response.json();
-  const playlists = data.items;
-
-
-  setMyPlaylist(playlists);
-
 }
 
 

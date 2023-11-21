@@ -25,12 +25,27 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/src/components/ui/avatar";
-import { PlayIcon, PlusIcon } from "@radix-ui/react-icons";
+import {
+  AccessibilityIcon,
+  LightningBoltIcon,
+  PlayIcon,
+  PlusIcon,
+  RocketIcon,
+  StarFilledIcon,
+  TargetIcon,
+  TimerIcon,
+} from "@radix-ui/react-icons";
 
 import { v4 as uuidv4 } from "uuid";
 import { AudioSearch } from "@/src/utils/types";
-import { spotify2Camelot } from "@/src/utils/commonFunctions";
+import {
+  convertTime,
+  featuresChoseNamesDesciptions,
+  spotify2Camelot,
+} from "@/src/utils/commonFunctions";
 import { addUserPlaylist } from "@/src/utils/addUserPlaylist";
+import { useSelector, useDispatch } from "react-redux";
+import { TooltipGeneral } from "./TooltipGeneral";
 
 function ShortTable({
   setSearchSong,
@@ -97,8 +112,39 @@ function ShortTable({
             <TableHead>Key</TableHead>
             {current_track && (
               <>
-                <TableHead>Energy</TableHead>
-                <TableHead>Dance</TableHead>
+                <TableHead className="pl-4">
+                  <TooltipGeneral
+                    description={featuresChoseNamesDesciptions[0]}
+                    component={<LightningBoltIcon />}
+                  />
+                </TableHead>
+                <TableHead className="pl-4">
+                  <TooltipGeneral
+                    description={featuresChoseNamesDesciptions[1]}
+                    component={<AccessibilityIcon />}
+                  />
+                </TableHead>
+                <TableHead className="pl-4">
+                  <TooltipGeneral
+                    description={featuresChoseNamesDesciptions[2]}
+                    component={<TargetIcon />}
+                  />
+                </TableHead>
+                <TableHead className="pl-4">
+                  <TooltipGeneral
+                    description={featuresChoseNamesDesciptions[3]}
+                    component={<RocketIcon />}
+                  />
+                </TableHead>
+                <TableHead className="pl-3">
+                  <TooltipGeneral
+                    description={featuresChoseNamesDesciptions[4]}
+                    component={<StarFilledIcon />}
+                  />
+                </TableHead>
+                <TableHead className="pl-4">
+                  <TimerIcon />
+                </TableHead>
               </>
             )}
             <TableHead></TableHead>
@@ -129,7 +175,7 @@ function ShortTable({
               </TableCell>
               <TableCell>
                 <div>
-                  <p>
+                  <p className="font-extrabold">
                     {track.name.length > name_delimiter
                       ? track.name.slice(0, name_delimiter) + "..."
                       : track.name}
@@ -141,14 +187,31 @@ function ShortTable({
                   </p>
                 </div>
               </TableCell>
-              <TableCell>{Math.round(track.BPM)}</TableCell>
-              <TableCell>{spotify2Camelot(track.key, track.mode)}</TableCell>
+              <TableCell className="font-extrabold">
+                {Math.round(track.BPM)}
+              </TableCell>
+              <TableCell className="font-extrabold">
+                {spotify2Camelot(track.key, track.mode)}
+              </TableCell>
               {current_track && (
                 <>
-                  <TableCell>{(track.energy * 100).toFixed(1)}</TableCell>
-                  <TableCell>
-                    {" "}
+                  <TableCell className="text-center text-xs">
+                    {(track.energy * 100).toFixed(1)}
+                  </TableCell>
+                  <TableCell className="text-center text-xs">
                     {(track.danceability * 100).toFixed(1)}
+                  </TableCell>
+                  <TableCell className="text-center opacity-80 text-xs">
+                    {(track.instrumentalness * 100).toFixed(1)}
+                  </TableCell>
+                  <TableCell className="text-center opacity-80 text-xs">
+                    {(track.valence * 100).toFixed(1)}
+                  </TableCell>
+                  <TableCell className="text-center text-xs">
+                    {track.popularity}
+                  </TableCell>
+                  <TableCell className="text-center text-xs">
+                    {convertTime(track.duration)}
                   </TableCell>
                 </>
               )}

@@ -2,6 +2,8 @@
 
 /* 
   quando inserir a música  -> "Música [trackName] adicionada à playlist [playlistName]"
+
+  achei melhor não inserir abaixo da música selecionada e sim no final da playlist como teste de ux
 */
 import { AudioSearch } from "./types";
 
@@ -12,7 +14,7 @@ export const addUserPlaylist = (
 ) => {
   const localUserPlaylist: AudioSearch[] = JSON.parse(localStorage.getItem("userPlaylist") || "[]");
 
-  if (trackId) {
+  /* if (trackId) {
     const index = localUserPlaylist.findIndex(track => track.id === trackId);
     
     if (index !== -1) {
@@ -23,12 +25,12 @@ export const addUserPlaylist = (
     }
   } else {
     localUserPlaylist.push(trackToAdd);
-  }
+  } */
 
   localStorage.setItem("userPlaylist", JSON.stringify(localUserPlaylist));
 
   setUserPlaylist((prevState: AudioSearch[]) => {
-    if (trackId) {
+    /* if (false) {
       const index = prevState.findIndex(track => track.id === trackId);
       if (index !== -1) {
         return [
@@ -39,8 +41,8 @@ export const addUserPlaylist = (
       } else {
         return [...prevState, trackToAdd];
       }
-    } else {
+    } else { */
       return [...prevState, trackToAdd];
-    }
+    // }
   });
 };

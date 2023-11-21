@@ -2,27 +2,29 @@
 
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
+import { Alert, AlertDescription } from "@/src/components/ui/alert";
+import { Separator } from "@radix-ui/react-select";
 
-import { useEffect, useRef, useState } from "react";
-import TableSearch from "@/src/components/TableSearch";
-import TablePlaylist from "@/src/components/TablePlaylist";
-import { AudioSearch } from "@/src/utils/types";
-
-import {
-  NotificationProvider,
-  useNotifications,
-} from "@/src/providers/NotificationContext";
-import { Alert, AlertDescription, AlertTitle } from "@/src/components/ui/alert";
 import {
   CheckIcon,
   ExclamationTriangleIcon,
   InfoCircledIcon,
 } from "@radix-ui/react-icons";
+
+import TableSearch from "@/src/components/TableSearch";
+import TablePlaylist from "@/src/components/TablePlaylist";
+import { AccordionCharts } from "@/src/components/AcordionCharts";
+
+
+import { AudioSearch } from "@/src/utils/types";
+
+import { useNotifications } from "@/src/providers/NotificationContext";
+
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Separator } from "@radix-ui/react-select";
 
-import { AccordionCharts } from "@/src/components/AcordionCharts";
+import { useEffect, useRef, useState } from "react";
+
 
 export default function Home() {
   const session = useSession();
@@ -44,7 +46,6 @@ export default function Home() {
   const { notification } = useNotifications();
 
   const handleAudio = (url: string) => {
-
     // Se clicar no mesmo áudio que já está tocando
     if (playingURL === url) {
       if (audioRef.current) {
@@ -105,17 +106,18 @@ export default function Home() {
     function getPlaylist() {
       return localStorage.getItem("userPlaylist") || "[]";
     }
-  
+
     if (typeof window !== "undefined") {
       setUserPlaylist(JSON.parse(getPlaylist()));
     }
   }, []);
 
+
+
   if (session.status === "unauthenticated") {
     router.push("/login");
     return null;
   }
-  console.log(session);
 
   return (
     <>
@@ -144,11 +146,6 @@ export default function Home() {
       <div className="flex flex-col items-center">
         <div
           className="flex-grow justify-center items-center justify-center items-center"
-          style={
-            {
-              // border: "1px solid red",
-            }
-          }
         >
           <p className="text-center text-6xl tracking-wider font-black pt-24 pb-10">
             Set Mix Generator
@@ -177,13 +174,9 @@ export default function Home() {
             userPlaylist={userPlaylist}
           />
         </div>
+        <div className="mt-80" />
         <div
-          className="w-6/12 mx-auto relative top-10"
-          style={
-            {
-              // border: "1px solid white",
-            }
-          }
+          className="w-6/12 mx-auto"
         >
           <TablePlaylist
             setUserPlaylist={setUserPlaylist}
@@ -192,9 +185,9 @@ export default function Home() {
             audioRef={audioRef}
           />
         </div>
-          <Separator className="my-14" />
-          <div className="w-7/12 mx-auto flex-grow justify-center items-center justify-center items-center">
-            <AccordionCharts userPlaylist={userPlaylist} />
+        <Separator className="my-14" />
+        <div className="w-7/12 mx-auto flex-grow justify-center items-center justify-center items-center">
+          <AccordionCharts userPlaylist={userPlaylist} />
         </div>
       </div>
     </>

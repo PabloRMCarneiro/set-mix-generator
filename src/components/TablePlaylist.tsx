@@ -48,7 +48,7 @@ import {
   featuresChoseNamesDesciptions,
   spotify2Camelot,
 } from "@/src/utils/commonFunctions";
-import { Button } from "./ui/button";
+import { Button } from "@/src/components/ui/button";
 import { handleCreatePlaylist } from "@/src/utils/createPlaylist";
 
 import {
@@ -62,6 +62,8 @@ import { useNotifications } from "@/src/providers/NotificationContext";
 import { SiBytedance, SiSpotify } from "react-icons/si";
 import { TooltipGeneral } from "./TooltipGeneral";
 import Link from "next/link";
+import { useToast } from "./ui/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
 
 export default function TablePlaylist({
   setUserPlaylist,
@@ -75,7 +77,7 @@ export default function TablePlaylist({
   audioRef: React.MutableRefObject<HTMLAudioElement | null>;
 }) {
   const session = useSession();
-  const { notify } = useNotifications();
+  const { toast } = useToast();
   const [notificationCreatePlaylist, setNotificationCreatePlaylist] =
     useState<string>("");
 
@@ -85,11 +87,16 @@ export default function TablePlaylist({
     localStorage.setItem("userPlaylist", JSON.stringify(newPlaylist));
   };
 
-  const [playlistName, setplaylistName] = useState<string>("");
+  const [playlistName, setplaylistName] = useState<string>(localStorage.getItem("playlistName") || "");
 
   const handlePlaylist = () => {
     if (playlistName === "") {
-      notify("Please, enter a name for your playlist", "error");
+      toast({
+        variant: "destructive",
+        title: <p className="font-bold">Playlist name is empty</p>,
+        description: "Please, type a name for your playlist",
+        action: <ToastAction altText="---">OK</ToastAction>,
+      });
       return;
     } else {
       handleCreatePlaylist(
@@ -99,7 +106,14 @@ export default function TablePlaylist({
         setNotificationCreatePlaylist
       );
       notificationCreatePlaylist &&
-        notify(notificationCreatePlaylist, "success");
+      // notify(notificationCreatePlaylist, "success");
+        toast({
+          variant: "success",
+          title: <p className="font-bold">{notificationCreatePlaylist }</p>,
+          description: "Your playlist is now available on Spotify",
+          action: <ToastAction altText="---">OK</ToastAction>,
+        });
+      
       setNotificationCreatePlaylist("");
     }
   };
@@ -123,6 +137,8 @@ export default function TablePlaylist({
     },
     [userPlaylist, setUserPlaylist]
   );
+
+  console.log(localStorage.getItem("userPlaylist"))
 
   const [hoverIndexRow, setHoverIndexRow] = useState<number>(-1);
   return (
@@ -167,31 +183,6 @@ export default function TablePlaylist({
               </p>
             </div>
           </div>
-          <AlertDialog>
-            <AlertDialogTrigger>
-              <Button className="flex items-center mr-5" variant="outline">
-                <span className="mr-2">
-                  <TrashIcon />
-                </span>
-                Clear All
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will remove all songs from
-                  your playlist.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={deleteAllSongs}>
-                  Continue
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
 
           <Button className="flex items-center" onClick={handlePlaylist}>
             <span className="mr-2">
@@ -315,13 +306,13 @@ export default function TablePlaylist({
                             <TableCell>
                               <div>
                                 <p className="font-extrabold">
-                                  {track.name.length > 60
-                                    ? track.name.slice(0, 60) + "..."
+                                  {track.name.length > 40
+                                    ? track.name.slice(0, 40) + "..."
                                     : track.name}
                                 </p>
                                 <p className="opacity-50">
-                                  {track.artists.length > 60
-                                    ? track.artists.slice(0, 60) + "..."
+                                  {track.artists.length > 40
+                                    ? track.artists.slice(0, 40) + "..."
                                     : track.artists}
                                 </p>
                               </div>
@@ -390,7 +381,7 @@ export default function TablePlaylist({
                                 </AlertDialogContent>
                               </AlertDialog>
                             </TableCell>
-                            <TableCell className="justify-center my-auto">
+                            <TableCell className="justify-center my-auto pr-5">
                               <SiSpotify
                                 onClick={() =>
                                   window.open(track.spotify_link, "_blank")

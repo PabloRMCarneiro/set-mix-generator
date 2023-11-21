@@ -4,16 +4,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/src/components/ui/accordion";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/src/components/ui/alert"
- 
+import { Alert, AlertDescription, AlertTitle } from "@/src/components/ui/alert";
 
 import ChartFeatures from "./ChartFeatures";
 import ChartKey from "./ChatKey";
 import { AudioSearch } from "../utils/types";
+import ChartArtists from "./ChartArtists";
+import { Separator } from "@radix-ui/react-select";
+import ChartBPM from "./ChatBPM";
 
 export function AccordionCharts({
   userPlaylist,
@@ -23,20 +21,17 @@ export function AccordionCharts({
   return (
     <>
       {userPlaylist !== null && userPlaylist.length >= 5 ? (
-        <Accordion type="multiple" className="w-10/12 mx-auto text-center">
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Features Chart</AccordionTrigger>
-            <AccordionContent>
-              <ChartFeatures userPlaylist={userPlaylist} />
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-2">
-            <AccordionTrigger>Key Chart</AccordionTrigger>
-            <AccordionContent>
-              <ChartKey userPlaylist={userPlaylist} />
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        <div className="align-center">
+          <ChartFeatures userPlaylist={userPlaylist} />
+          <ChartKey userPlaylist={userPlaylist} />
+          <ChartBPM userPlaylist={userPlaylist} />
+          <div className="flex">
+            <ChartArtists userPlaylist={userPlaylist} />
+            <Separator className="mx-16"/>
+          <ChartArtists userPlaylist={userPlaylist} />
+
+          </div>
+        </div>
       ) : (
         <div className="flex justify-center">
           <Alert className="w-6/12">

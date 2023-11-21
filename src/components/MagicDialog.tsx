@@ -9,7 +9,7 @@ import TableSkeleton from "./TableSkeleton";
 import { Separator } from "@radix-ui/react-select";
 import { Button } from "@/src/components/ui/button";
 
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { AudioSearch } from "@/src/utils/types";
 
@@ -24,6 +24,7 @@ import {
 import SelectRecomdations from "./SelectRecomdations";
 import SearchUserSeeds from "./SearchUserSeeds";
 import { TooltipGeneral } from "./TooltipGeneral";
+import { useNotifications } from "../providers/NotificationContext";
 
 export type Seeds = {
   seeds_artists: string[];
@@ -47,6 +48,7 @@ export default function MagicDialog({
   onPlayAudio: Function;
 }) {
   const session = useSession();
+  const { notify } = useNotifications();
   const [audioRecomendation, setAudioRecomendation] = useState<AudioSearch[]>(
     []
   );
@@ -65,16 +67,27 @@ export default function MagicDialog({
     ]
   );
 
-  const [userSeeds, setUserSeeds] = useState<Seeds>({
-    seeds_artists: [],
-    seeds_tracks: [],
-  });
-
-  const [seeds, setSeeds] = useState<SeedsIntern>({
+  const userSeeds: SeedsIntern = {
     ids: [],
     thumbs: [],
-  });
+  };
 
+  useEffect(() => {
+    const last = userPlaylist.findIndex((item) => item.id === track.id);
+    if (last > 4) {
+      userPlaylist.slice(last - 4, last + 1).forEach((item) => {
+        userSeeds.ids.push(item.id);
+        userSeeds.thumbs.push(item.thumbnail);
+      });
+    } else {
+      userPlaylist.slice(0, last + 1).forEach((item) => {
+        userSeeds.ids.push(item.id);
+        userSeeds.thumbs.push(item.thumbnail);
+      });
+    }
+  }, [userPlaylist, track, userSeeds.ids, userSeeds.thumbs]);
+
+  const [seeds, setSeeds] = useState<SeedsIntern>(userSeeds);
 
   return (
     <DropdownMenu>
@@ -117,19 +130,24 @@ export default function MagicDialog({
 
             <Separator className="mx-3" />
             <Button
-              onClick={() =>
-                handleRecomendation(
-                  track,
-                  typeMix,
-                  BPMRange,
-                  (session.data as any).accessToken,
-                  featuresSliders,
-                  userPlaylist,
-                  setAudioRecomendation,
-                  setIsLoading,
-                  setErrorMsg
-                )
-              }
+              onClick={() => {
+                if (seeds.ids.length > 0) {
+                  handleRecomendation(
+                    track,
+                    typeMix,
+                    BPMRange,
+                    (session.data as any).accessToken,
+                    featuresSliders,
+                    userPlaylist,
+                    setAudioRecomendation,
+                    setIsLoading,
+                    setErrorMsg,
+                    seeds.ids
+                  );
+                } else {
+                  notify('Please, select at least one seed', 'error');
+                }
+              }}
             >
               <MagnifyingGlassIcon />
             </Button>

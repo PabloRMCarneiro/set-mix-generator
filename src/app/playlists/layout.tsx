@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   title: "Set Mix Genearate",
 };
 
+import { Toaster } from "@/src/components/ui/toaster"
+
 export default function RootLayout({
   children,
 }: {
@@ -21,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <main>
+        <Toaster />
           <NextAuthProvider>
             <Theme>
               <ThemeProvider

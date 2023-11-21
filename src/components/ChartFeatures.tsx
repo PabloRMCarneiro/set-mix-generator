@@ -62,12 +62,14 @@ export default function ChartFeatures({
             dataKey="instrumentalness"
             stroke="#d8d538"
             strokeWidth={1}
-          />
+            strokeDasharray="5 5"
+            />
           <Line
             type="monotone"
             dataKey="valence"
             stroke="#d838d8"
             strokeWidth={1}
+            strokeDasharray="3 4 5 2"
           />
         </LineChart>
       </ResponsiveContainer>

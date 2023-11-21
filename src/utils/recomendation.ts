@@ -52,7 +52,9 @@ export const handleRecomendation = async (
   userPlaylist: AudioSearch[],
   setAudioRecomendation: Function,
   setIsLoading: Function,
-  setError: Function
+  setError: Function,
+  seedsTracks?: string[],
+  seedsArtists?: string[],
 ) => {
   setIsLoading(true);
   setError(null);
@@ -79,21 +81,21 @@ export const handleRecomendation = async (
     targetPopularity,
   ] = featuresSliders.map((item) => [item[0], item[1]]);
 
-  const aux = userPlaylist.findIndex((item) => item.id === track.id);
-  const seedsTracks =
-    aux > 4
-      ? userPlaylist
-          .slice(aux - 4, aux + 1)
-          .map((item) => item.id)
-          .join(",")
-      : userPlaylist
-          .slice(0, aux + 1)
-          .map((item) => item.id)
-          .join(",");
+  // const aux = userPlaylist.findIndex((item) => item.id === track.id);
+  // const seedsTracks =
+  //   aux > 4
+  //     ? userPlaylist
+  //         .slice(aux - 4, aux + 1)
+  //         .map((item) => item.id)
+  //         .join(",")
+  //     : userPlaylist
+  //         .slice(0, aux + 1)
+  //         .map((item) => item.id)
+  //         .join(",");
 
   try {
     const response = await fetch(
-      `https://api.spotify.com/v1/recommendations?seed_tracks=${seedsTracks}&limit=100&target_key=${targetKey}&target_mode=${targetMode}&min_tempo=${min_tempo}&max_tempo=${max_tempo}${targetEnergy[1] ? `&target_energy=${targetEnergy[0]}` : ""}${
+      `https://api.spotify.com/v1/recommendations?seed_tracks=${seedsTracks?.join(',')}&limit=100&target_key=${targetKey}&target_mode=${targetMode}&min_tempo=${min_tempo}&max_tempo=${max_tempo}${targetEnergy[1] ? `&target_energy=${targetEnergy[0]}` : ""}${
         targetDanceability[1]
           ? `&target_danceability=${targetDanceability[0]}`
           : ""

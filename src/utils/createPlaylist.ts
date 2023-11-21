@@ -19,7 +19,6 @@ export const handleCreatePlaylist = async (
   setNotification: Function,
 ) => {
   const userId = await getCurrentUserId(token);
-  setNotification(''); // Armazenará a mensagem de resultado
 
   // Verifique se a playlist com o nome fornecido já existe
   const existingPlaylistId = await findPlaylistByName(
@@ -32,9 +31,9 @@ export const handleCreatePlaylist = async (
 
   if (existingPlaylistId) {
     // Se a playlist já existir, limpe a playlist antes de adicionar novas faixas
+    setNotification('Playlist updated successfully');
     playlistId = existingPlaylistId;
     await clearPlaylist(playlistId, token);
-    setNotification('Playlist updated successfully');
   } else {
     // Caso contrário, crie uma nova playlist
     const response = await fetch(
@@ -53,33 +52,39 @@ export const handleCreatePlaylist = async (
       }
     );
 
+    setNotification('New playlist created successfully');
     const data = await response.json();
     playlistId = data.id;
-    setNotification('New playlist created successfully');
   }
 
   // Adicione faixas à playlist (agora vazia ou nova)
-  const response2 = await fetch(
-    `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        uris: tracksIds.map((item) => `spotify:track:${item}`),
-      }),
-    }
-  );
-
-  // Verifique se a adição foi bem-sucedida
-  if (!response2.ok) {
-    throw new Error('Erro ao adicionar faixas à playlist.');
-  }
+  await addTracksToPlaylist(playlistId, tracksIds, token);
 
 };
 
+async function addTracksToPlaylist(playlistId: string, tracksIds: string[], token: string) {
+  const batchSize = 100;
+  for (let i = 0; i < tracksIds.length; i += batchSize) {
+    const batch = tracksIds.slice(i, i + batchSize);
+    const response = await fetch(
+      `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uris: batch.map((item) => `spotify:track:${item}`),
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Erro ao adicionar faixas à playlist.');
+    }
+  }
+}
 
 async function clearPlaylist(playlistId: string, token: string) {
   // Obtenha todos os track URIs da playlist

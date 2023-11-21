@@ -49,13 +49,11 @@ type SearchSeeds = {
 };
 
 function SearchUserSeeds({
-  recomendationSeeds,
   seeds,
   setSeeds,
 }: {
   seeds: SeedsIntern;
   setSeeds: Function;
-  recomendationSeeds?: Seeds;
 }) {
   const session = useSession();
   const { notify } = useNotifications();
@@ -95,6 +93,7 @@ function SearchUserSeeds({
       );
     }
   }, [searchButton, searchSeeds.query, searchSeeds.type, session.data]);
+
 
   return (
     <div className="w-32">
@@ -163,13 +162,13 @@ function SearchUserSeeds({
               }}
             >
               {seeds.thumbs.length === 0 && (
-                <div className="flex items-center">
-                  <Avatar>
-                    <AvatarFallback className="w-12 h-12"></AvatarFallback>
-                  </Avatar>
-                  <p className="ml-5 font-bold">Add seeds selection ...</p>
-                </div>
-              )}
+                  <div className="flex items-center">
+                    <Avatar>
+                      <AvatarFallback className="w-12 h-12"></AvatarFallback>
+                    </Avatar>
+                    <p className="ml-5 font-bold">Add seeds selection ...</p>
+                  </div>
+                )}
               {seeds.thumbs.map((thumb, index) => (
                 <div className="flex mr-4" key={index}>
                   <Avatar>
@@ -252,7 +251,6 @@ function SearchUserSeeds({
                           </div>
                         </TableCell>
                         <TableCell>
-                          {/* verificar se o novo adicionado ja encontra no seeds se sim o ícone será de excluir, se não icone será de adcionar */}
                           {seeds.ids.includes(item.id) ? (
                             <Cross1Icon
                               className="hover:cursor-pointer"

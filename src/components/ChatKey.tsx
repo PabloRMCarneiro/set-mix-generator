@@ -31,8 +31,8 @@ export default function ChartKey({
     <>
       <ResponsiveContainer width="100%" aspect={4.0 / 2.0}>
         <LineChart
-          width={data.length * 50 > 1100 ? data.length * 50 : 1100}
-          height={400}
+          width={data.length * 50 > 800 ? data.length * 50 : 800}
+          height={300}
           data={data}
           margin={{
             top: 5,
