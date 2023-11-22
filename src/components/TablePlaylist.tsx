@@ -105,18 +105,19 @@ export default function TablePlaylist({
         (session.data as any).accessToken,
         setNotificationCreatePlaylist
       );
-      notificationCreatePlaylist &&
-      // notify(notificationCreatePlaylist, "success");
-        toast({
-          variant: "success",
-          title: <p className="font-bold">{notificationCreatePlaylist }</p>,
-          description: "Your playlist is now available on Spotify",
-          action: <ToastAction altText="---">OK</ToastAction>,
-        });
-      
       setNotificationCreatePlaylist("");
     }
   };
+
+  useEffect(() => {
+    notificationCreatePlaylist &&
+      toast({
+        variant: "success",
+        title: <p className="font-bold">{notificationCreatePlaylist }</p>,
+        description: "Your playlist is now available on Spotify",
+        action: <ToastAction altText="---">OK</ToastAction>,
+      });
+  }, [notificationCreatePlaylist, toast]);
 
   const deleteAllSongs = () => {
     setUserPlaylist([]);
@@ -152,14 +153,15 @@ export default function TablePlaylist({
             }
           }
         >
-          <div className="block w-10/12">
-            <input
-              className="text-3xl font-bold bg-transparent border-none outline-none focus:ring-0 w-full"
-              type="text"
-              placeholder="Playlist Name"
-              value={playlistName}
-              onChange={(e) => setplaylistName(e.target.value)}
-            />
+          <div className="block w-5/12">
+            <TooltipGeneral component={
+              <input
+                className="text-3xl font-bold bg-transparent border-none outline-none focus:ring-0 w-full"
+                type="text"
+                placeholder="Playlist Name"
+                value={playlistName}
+                onChange={(e) => setplaylistName(e.target.value)}
+              />} description="If you change the name of your already created playlist, it will create another one with the name provided. If you enter the same name as an already created playlist, it will overwrite the existing one with the songs from the current playlist." />
             <div className="flex">
               <p className="text-sm opacity-70 mr-2">
                 {userPlaylist !== null ? userPlaylist.length : 0} Songs,{" "}

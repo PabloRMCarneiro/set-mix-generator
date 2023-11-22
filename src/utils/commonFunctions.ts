@@ -102,6 +102,10 @@ export const typeOfMix: {
     keyPlus: 7, // procurar um jeito de entrar no conjunto
     modeShift: false,
   },
+  "none": {
+    keyPlus: 13,
+    modeShift: false,
+  }
 };
 
 export const typeOfBPMRange: {
@@ -153,7 +157,7 @@ export const structTypeOfMix = [
     value: "diagonal-mix",
     name: "Diagonal Mix",
     description:
-      "Find the key -1 and change the mode if it is Minor or find the key +1 and change the mode if it is Major",
+      "Find the key +3 and chage the mode if it is Minor or find the key -3 and change the mode if it is Major",
   },
   {
     value: "jaws-mix",
@@ -161,10 +165,9 @@ export const structTypeOfMix = [
     description: "Find the key +7 and the same mode",
   },
   {
-    value: "diagonal-mix",
-    name: "Diagonal Mix",
-    description:
-      "Find the key +3 and chage the mode if it is Minor or find the key -3 and change the mode if it is Major",
+    value: "none",
+    name: "None",
+    description: "Does not take into account the resonance of the music", // não leva em consideração a tonalidade da música
   },
 ];
 

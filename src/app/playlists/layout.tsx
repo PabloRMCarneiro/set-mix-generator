@@ -6,7 +6,6 @@ import { NextAuthProvider } from "@/src/providers/NextAuthProvider";
 import { ThemeProvider } from "@/src/components/theme-provider";
 import { Theme } from "@radix-ui/themes";
 
-import { NotificationProvider } from "@/src/providers/NotificationContext";
 
 export const metadata: Metadata = {
   title: "Set Mix Genearate",
@@ -32,7 +31,7 @@ export default function RootLayout({
                 enableSystem
                 disableTransitionOnChange
               >
-                <NotificationProvider>{children}</NotificationProvider>
+                {children}
               </ThemeProvider>
             </Theme>
           </NextAuthProvider>

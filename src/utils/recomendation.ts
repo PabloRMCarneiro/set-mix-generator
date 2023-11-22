@@ -54,21 +54,26 @@ export const handleRecomendation = async (
   setIsLoading: Function,
   setError: Function,
   seedsTracks?: string[],
-  seedsArtists?: string[],
+  seedsArtists?: string[]
 ) => {
   setIsLoading(true);
   setError(null);
 
-  const targetMode = typeOfMix[typeMix].modeShift
-    ? track.mode === 1
-      ? 0
-      : 1
-    : track.mode;
+  let targetKey = 0;
+  let targetMode = 0;
+  
+  if (typeOfMix[typeMix].keyPlus !== 13) {
+    targetMode = typeOfMix[typeMix].modeShift
+      ? track.mode === 1
+        ? 0
+        : 1
+      : track.mode;
 
-  const targetKey = camelot2Spotify(
-    String(s2c(track.key, track.mode) + typeOfMix[typeMix].keyPlus),
-    targetMode
-  );
+    targetKey = camelot2Spotify(
+      String(s2c(track.key, track.mode) + typeOfMix[typeMix].keyPlus),
+      targetMode
+    );
+  }
 
   const min_tempo = track.BPM + typeOfBPMRange[BPMRange]()[0];
   const max_tempo = track.BPM + typeOfBPMRange[BPMRange]()[1];
@@ -95,7 +100,11 @@ export const handleRecomendation = async (
 
   try {
     const response = await fetch(
-      `https://api.spotify.com/v1/recommendations?seed_tracks=${seedsTracks?.join(',')}&limit=100&target_key=${targetKey}&target_mode=${targetMode}&min_tempo=${min_tempo}&max_tempo=${max_tempo}${targetEnergy[1] ? `&target_energy=${targetEnergy[0]}` : ""}${
+      `https://api.spotify.com/v1/recommendations?seed_tracks=${seedsTracks?.join(
+        ","
+      )}&limit=100${typeOfMix[typeMix].keyPlus !== 13 ? `&target_key=${targetKey}&target_mode=${targetMode}`: ''}&min_tempo=${min_tempo}&max_tempo=${max_tempo}${
+        targetEnergy[1] ? `&target_energy=${targetEnergy[0]}` : ""
+      }${
         targetDanceability[1]
           ? `&target_danceability=${targetDanceability[0]}`
           : ""
@@ -104,7 +113,9 @@ export const handleRecomendation = async (
           ? `&target_instrumentalness=${targetInstrumentalness[0]}`
           : ""
       }${targetValence[1] ? `&target_valence=${targetValence[0]}` : ""}${
-        targetPopularity[1] ? `&target_popularity=${Number(targetPopularity[0])*100}` : ""
+        targetPopularity[1]
+          ? `&target_popularity=${Number(targetPopularity[0]) * 100}`
+          : ""
       }`,
       {
         headers: {

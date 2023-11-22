@@ -99,7 +99,12 @@ export default function TableSearch({
           <TableSkeleton />
         </div>
       ) : errorMsg ? (
-        notify(errorMsg, "error")
+          toast({
+            variant: "destructive",
+            title: <p className="font-bold">Error</p>,
+            description: errorMsg,
+            action: <ToastAction altText="---">OK</ToastAction>,
+          })
       ) : audioSearch.length !== 0 && query !== "" ? (
         <div
           style={{

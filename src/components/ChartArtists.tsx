@@ -80,16 +80,24 @@ import {
 
 import { AudioSearch } from "../utils/types";
 
-function getTopArtistsChartData(userPlaylist: AudioSearch[]) {
-  // Create a map to count the occurrences of each artist
-  const artistCounts = userPlaylist.reduce((acc, track) => {
-    // Assuming each track's artists are separated by a comma and a space
-    const artists = track.artists.split(", ");
-    artists.forEach((artist) => {
-      acc[artist] = (acc[artist] || 0) + 1;
-    });
-    return acc;
-  }, {});
+interface ArtistCounts {
+  [key: string]: number;
+}
+
+function getTopArtistsChartData(
+  userPlaylist: AudioSearch[]
+): { artist: string; quantity: number; fullMark: number }[] {
+  // Usar o tipo ArtistCounts para artistCounts
+  const artistCounts: ArtistCounts = userPlaylist.reduce(
+    (acc: ArtistCounts, track) => {
+      const artists = track.artists.split(", ");
+      artists.forEach((artist) => {
+        acc[artist] = (acc[artist] || 0) + 1;
+      });
+      return acc;
+    },
+    {}
+  );
 
   // Create an array from the counts and sort it
   const sortedArtists = Object.keys(artistCounts)

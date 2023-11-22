@@ -1,16 +1,13 @@
 "use client";
 import { getAllMyPLaylists } from "@/src/utils/myplaylists";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 import { Button } from "@/src/components/ui/button";
 import { AudioSearch } from "@/src/utils/types";
 import chosePLaylistToUserPlaylist from "@/src/utils/chosePlaylistToUserPlaylist";
-import { PlusIcon } from "@radix-ui/react-icons";
 import {
   Avatar,
-  AvatarFallback,
   AvatarImage,
 } from "@/src/components/ui/avatar";
 import {
@@ -21,7 +18,6 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/src/components/ui/alert-dialog";
 import { Input } from "@/src/components/ui/input";
@@ -129,9 +125,11 @@ function Playlists() {
             <AlertDialogTrigger asChild>
               <Button>Create New Playlist</Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent style={{
+              width: '25rem',
+            }}>
               <AlertDialogHeader>
-                <AlertDialogDescription>
+                <AlertDialogDescription className="mb-2 mt-2">
                   <Input
                     type="text"
                     placeholder="Enter the name of your new playlist ..."

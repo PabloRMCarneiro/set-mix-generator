@@ -23,7 +23,7 @@ import { useNotifications } from "@/src/providers/NotificationContext";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 
 
 export default function Home() {
@@ -102,7 +102,7 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(() => {
+/*   useEffect(() => {
     function getPlaylist() {
       return localStorage.getItem("userPlaylist") || "[]";
     }
@@ -111,7 +111,13 @@ export default function Home() {
       setUserPlaylist(JSON.parse(getPlaylist()));
     }
   }, []);
-
+ */
+  
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("userPlaylist", JSON.stringify(userPlaylist));
+    }
+  }, [userPlaylist]);
 
 
   if (session.status === "unauthenticated") {
