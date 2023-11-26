@@ -18,7 +18,6 @@ import { AccordionCharts } from "@/src/components/AcordionCharts";
 
 import { AudioSearch } from "@/src/utils/types";
 
-import { useNotifications } from "@/src/providers/NotificationContext";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -43,7 +42,6 @@ export default function Home() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playingURL, setPlayingURL] = useState<string | null>(null);
 
-  const { notification } = useNotifications();
 
   const handleAudio = (url: string) => {
     // Se clicar no mesmo áudio que já está tocando
@@ -127,34 +125,12 @@ export default function Home() {
 
   return (
     <>
-      {notification && (
-        <Alert
-          className={`fixed right-6 bottom-10 w-80 z-40 ${
-            notification.type === "success"
-              ? "bg-green-500"
-              : notification.type === "error"
-              ? "bg-red-500"
-              : "bg-blue-500"
-          }`}
-        >
-          <div className="flex items-center space-x-2 z-40">
-            {notification.type === "success" ? (
-              <CheckIcon />
-            ) : notification.type === "error" ? (
-              <ExclamationTriangleIcon />
-            ) : (
-              <InfoCircledIcon />
-            )}
-            <AlertDescription>{notification.message}</AlertDescription>
-          </div>
-        </Alert>
-      )}
       <div className="flex flex-col items-center">
         <div
           className="flex-grow justify-center items-center justify-center items-center"
         >
-          <p className="text-center text-6xl tracking-wider font-black pt-24 pb-10">
-            Set Mix Generator
+          <p className="text-center text-7xl tracking-wider font-black pt-24 pb-10">
+            Mixingfy
           </p>
           <div className="flex space-x-10 justify-center">
             <div className=" ">
@@ -193,7 +169,7 @@ export default function Home() {
         </div>
         <Separator className="my-14" />
         <div className="w-7/12 mx-auto flex-grow justify-center items-center justify-center items-center">
-          <AccordionCharts userPlaylist={userPlaylist} />
+          {/* <AccordionCharts userPlaylist={userPlaylist} /> */}
         </div>
       </div>
     </>

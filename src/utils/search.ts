@@ -3,6 +3,7 @@ import { handleAudioFeatures } from "./audioFeatures";
 
 // Função para buscar informações de uma faixa
 async function getTrackInfo(item: any, audioFeatures: any) {
+
   return {
     id: item.id,
     thumbnail: item.album.images[2].url,
@@ -47,11 +48,13 @@ export const handleSearch = async (
   setIsLoading: Function,
   setError: Function,
   type?: string,
+  seeds?: boolean,
 ) => {
   if (query === "" || searchButton === false) {
     setError("Preencha todos os campos");
     return;
   }
+  // if seeds is true not return a audio features request
 
   setSearchButton(false);
   setIsLoading(true);
@@ -85,7 +88,6 @@ export const handleSearch = async (
       setIsLoading(false);
       return;
     }
-
 
     const ids = items.map((item: any) => item.id);
 

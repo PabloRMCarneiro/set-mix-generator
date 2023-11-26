@@ -6,7 +6,6 @@ import { NextAuthProvider } from "@/src/providers/NextAuthProvider";
 import { ThemeProvider } from "@/src/components/theme-provider";
 import { Theme } from "@radix-ui/themes";
 
-import { NotificationProvider } from "@/src/providers/NotificationContext";
 
 export const metadata: Metadata = {
   title: "Set Mix Genearate",
@@ -15,7 +14,7 @@ export const metadata: Metadata = {
 import { Provider } from "react-redux";
 import store from "@/src/redux/store";
 
-import { Toaster } from "@/src/components/ui/toaster"
+import { Toaster } from "@/src/components/ui/toaster";
 
 export default function RootLayout({
   children,
@@ -26,7 +25,6 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <main>
-          <Toaster />
           <NextAuthProvider>
             <Theme>
               <ThemeProvider
@@ -35,15 +33,12 @@ export default function RootLayout({
                 enableSystem
                 disableTransitionOnChange
               >
-                <NotificationProvider>
-                  {/* <Provider store={store}> */}
-                    {children}
-                  {/* </Provider> */}
-                </NotificationProvider>
+                  {children}
               </ThemeProvider>
             </Theme>
           </NextAuthProvider>
         </main>
+        <Toaster />
       </body>
     </html>
   );

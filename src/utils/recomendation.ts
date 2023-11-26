@@ -49,19 +49,17 @@ export const handleRecomendation = async (
   BPMRange: string,
   token: string,
   featuresSliders: [[number], boolean][],
-  userPlaylist: AudioSearch[],
   setAudioRecomendation: Function,
   setIsLoading: Function,
   setError: Function,
-  seedsTracks?: string[],
-  seedsArtists?: string[]
+  seedsTracks?: string[]
 ) => {
   setIsLoading(true);
   setError(null);
 
   let targetKey = 0;
   let targetMode = 0;
-  
+
   if (typeOfMix[typeMix].keyPlus !== 13) {
     targetMode = typeOfMix[typeMix].modeShift
       ? track.mode === 1
@@ -70,10 +68,15 @@ export const handleRecomendation = async (
       : track.mode;
 
     targetKey = camelot2Spotify(
-      String(s2c(track.key, track.mode) + typeOfMix[typeMix].keyPlus),
+      String(
+        s2c(track.key, track.mode) + typeOfMix[typeMix].keyPlus <= 12
+          ? s2c(track.key, track.mode) + typeOfMix[typeMix].keyPlus
+          : (s2c(track.key, track.mode) + typeOfMix[typeMix].keyPlus) % 12
+      ),
       targetMode
     );
   }
+
 
   const min_tempo = track.BPM + typeOfBPMRange[BPMRange]()[0];
   const max_tempo = track.BPM + typeOfBPMRange[BPMRange]()[1];
@@ -98,11 +101,24 @@ export const handleRecomendation = async (
   //         .map((item) => item.id)
   //         .join(",");
 
+  const seedsTracksString = seedsTracks
+    ?.filter((id) => !id.includes("*"))
+    .join(",");
+  const seedsArtistsString = seedsTracks
+    ?.filter((id) => id.includes("*"))
+    .map((id) => id.replace("*", ""))
+    .join(",");
   try {
     const response = await fetch(
-      `https://api.spotify.com/v1/recommendations?seed_tracks=${seedsTracks?.join(
-        ","
-      )}&limit=100${typeOfMix[typeMix].keyPlus !== 13 ? `&target_key=${targetKey}&target_mode=${targetMode}`: ''}&min_tempo=${min_tempo}&max_tempo=${max_tempo}${
+      `https://api.spotify.com/v1/recommendations?${
+        seedsTracksString !== "" ? `&seed_tracks=${seedsTracksString}` : ""
+      }${
+        seedsArtistsString !== "" ? `&seed_artists=${seedsArtistsString}` : ""
+      }&limit=100${
+        typeOfMix[typeMix].keyPlus !== 13
+          ? `&target_key=${targetKey}&target_mode=${targetMode}`
+          : ""
+      }&min_tempo=${min_tempo}&max_tempo=${max_tempo}${
         targetEnergy[1] ? `&target_energy=${targetEnergy[0]}` : ""
       }${
         targetDanceability[1]

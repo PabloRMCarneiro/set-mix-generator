@@ -57,7 +57,6 @@ import {
   Draggable,
   DropResult,
 } from "react-beautiful-dnd";
-import { useNotifications } from "@/src/providers/NotificationContext";
 
 import { SiBytedance, SiSpotify } from "react-icons/si";
 import { TooltipGeneral } from "./TooltipGeneral";
@@ -87,15 +86,16 @@ export default function TablePlaylist({
     localStorage.setItem("userPlaylist", JSON.stringify(newPlaylist));
   };
 
-  const [playlistName, setplaylistName] = useState<string>(localStorage.getItem("playlistName") || "");
+  const [playlistName, setplaylistName] = useState<string>(
+    localStorage.getItem("playlistName") || ""
+  );
 
   const handlePlaylist = () => {
     if (playlistName === "") {
       toast({
         variant: "destructive",
-        title: <p className="font-bold">Playlist name is empty</p>,
+        title: "Playlist name is empty",
         description: "Please, type a name for your playlist",
-        action: <ToastAction altText="---">OK</ToastAction>,
       });
       return;
     } else {
@@ -112,10 +112,8 @@ export default function TablePlaylist({
   useEffect(() => {
     notificationCreatePlaylist &&
       toast({
-        variant: "success",
-        title: <p className="font-bold">{notificationCreatePlaylist }</p>,
+        title: notificationCreatePlaylist,
         description: "Your playlist is now available on Spotify",
-        action: <ToastAction altText="---">OK</ToastAction>,
       });
   }, [notificationCreatePlaylist, toast]);
 
@@ -139,7 +137,6 @@ export default function TablePlaylist({
     [userPlaylist, setUserPlaylist]
   );
 
-  console.log(localStorage.getItem("userPlaylist"))
 
   const [hoverIndexRow, setHoverIndexRow] = useState<number>(-1);
   return (
@@ -154,14 +151,18 @@ export default function TablePlaylist({
           }
         >
           <div className="block w-5/12">
-            <TooltipGeneral component={
-              <input
-                className="text-3xl font-bold bg-transparent border-none outline-none focus:ring-0 w-full"
-                type="text"
-                placeholder="Playlist Name"
-                value={playlistName}
-                onChange={(e) => setplaylistName(e.target.value)}
-              />} description="If you change the name of your already created playlist, it will create another one with the name provided. If you enter the same name as an already created playlist, it will overwrite the existing one with the songs from the current playlist." />
+            <TooltipGeneral
+              component={
+                <input
+                  className="text-3xl font-bold bg-transparent border-none outline-none focus:ring-0 w-full"
+                  type="text"
+                  placeholder="Playlist Name"
+                  value={playlistName}
+                  onChange={(e) => setplaylistName(e.target.value)}
+                />
+              }
+              description="If you change the name of your already created playlist, it will create another one with the name provided. If you enter the same name as an already created playlist, it will overwrite the existing one with the songs from the current playlist."
+            />
             <div className="flex">
               <p className="text-sm opacity-70 mr-2">
                 {userPlaylist !== null ? userPlaylist.length : 0} Songs,{" "}
@@ -185,13 +186,40 @@ export default function TablePlaylist({
               </p>
             </div>
           </div>
+          <div className="flex">
 
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button className="flex items-center mr-5" variant="outline">
+                <span className="mr-2">
+                  <TrashIcon />
+                  </span>
+                  <p className="text-sm">Clear all</p>
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will remove all songs from
+                  your playlist.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={deleteAllSongs}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Button className="flex items-center" onClick={handlePlaylist}>
             <span className="mr-2">
               <BsSpotify />
             </span>
             Add Playlist
           </Button>
+          </div>
         </div>
       </div>
 
@@ -277,7 +305,7 @@ export default function TablePlaylist({
                             key={track.id}
                             onMouseEnter={() => setHoverIndexRow(index)}
                             onMouseLeave={() => setHoverIndexRow(-1)}
-                            className={(track.origen ? "" : "")}
+                            className={track.origen ? "" : ""}
                           >
                             <TableCell className="pl-5 w-12">
                               {hoverIndexRow === index ? (

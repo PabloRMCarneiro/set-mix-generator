@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react";
 
 import { AudioSearch } from "@/src/utils/types";
 import { handleSearch } from "@/src/utils/search";
-import { useNotifications } from "@/src/providers/NotificationContext";
 import ShortTable from "./ShortTable";
 import TableSkeleton from "./TableSkeleton";
 import { ToastAction } from "@/src/components/ui/toast";
@@ -53,9 +52,8 @@ export default function TableSearch({
     } else if (searchButton && query === "") {
       toast({
         variant: "destructive",
-        title: <p className="font-bold">Search field is empty</p>,
+        title: "Search field is empty",
         description: "Please, type something to search",
-        action: <ToastAction altText="---">OK</ToastAction>,
       });
       setSearchButton(false);
       setAudioSearch([]);
@@ -63,7 +61,14 @@ export default function TableSearch({
       setSearchButton(false);
       setAudioSearch([]);
     }
-  }, [searchButton, query, session.data, setSearchButton, setAudioSearch, toast]);
+  }, [
+    searchButton,
+    query,
+    session.data,
+    setSearchButton,
+    setAudioSearch,
+    toast,
+  ]);
 
   const tableRef = useRef<HTMLDivElement>(null); // Ref para o elemento da tabela
 
@@ -89,7 +94,7 @@ export default function TableSearch({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioSearch.length]);
 
   return (
@@ -99,12 +104,11 @@ export default function TableSearch({
           <TableSkeleton />
         </div>
       ) : errorMsg ? (
-          toast({
-            variant: "destructive",
-            title: <p className="font-bold">Error</p>,
-            description: errorMsg,
-            action: <ToastAction altText="---">OK</ToastAction>,
-          })
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: errorMsg,
+        })
       ) : audioSearch.length !== 0 && query !== "" ? (
         <div
           style={{
@@ -113,8 +117,9 @@ export default function TableSearch({
             borderRadius: "1rem",
             background: "#040405ac",
             overflowY: "auto",
+            marginBottom: "-5rem",
           }}
-          className="elemento-com-scroll-vertical mt-5 fixed left-[610px]"
+          className="elemento-com-scroll-vertical mt-5 "
         >
           <ShortTable
             setSearchSong={setSearchSong}

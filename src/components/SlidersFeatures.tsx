@@ -93,7 +93,7 @@ function SlidersFeatures({
                         "w-8/12 mr-2 " +
                         (featuresSliders[index][1]
                           ? "opacity-100"
-                          : "opacity-30")
+                          : "opacity-50")
                       }
                     />
                   </div>

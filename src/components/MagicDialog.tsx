@@ -24,7 +24,8 @@ import {
 import SelectRecomdations from "./SelectRecomdations";
 import SearchUserSeeds from "./SearchUserSeeds";
 import { TooltipGeneral } from "./TooltipGeneral";
-import { useNotifications } from "../providers/NotificationContext";
+import { useToast } from "./ui/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
 
 export type Seeds = {
   seeds_artists: string[];
@@ -48,7 +49,8 @@ export default function MagicDialog({
   onPlayAudio: Function;
 }) {
   const session = useSession();
-  const { notify } = useNotifications();
+  const { toast } = useToast();
+
   const [audioRecomendation, setAudioRecomendation] = useState<AudioSearch[]>(
     []
   );
@@ -138,14 +140,17 @@ export default function MagicDialog({
                     BPMRange,
                     (session.data as any).accessToken,
                     featuresSliders,
-                    userPlaylist,
                     setAudioRecomendation,
                     setIsLoading,
                     setErrorMsg,
                     seeds.ids
                   );
                 } else {
-                  notify('Please, select at least one seed', 'error');
+                  toast({
+                    variant: 'destructive',
+                    title: 'Please, select at least one seed',
+                    description: 'For recomendation, you need at least one seed',
+                  })
                 }
               }}
             >

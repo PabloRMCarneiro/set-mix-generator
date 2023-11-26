@@ -6,10 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import { AudioSearch } from "@/src/utils/types";
 import chosePLaylistToUserPlaylist from "@/src/utils/chosePlaylistToUserPlaylist";
-import {
-  Avatar,
-  AvatarImage,
-} from "@/src/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/src/components/ui/avatar";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,8 +18,10 @@ import {
   AlertDialogTrigger,
 } from "@/src/components/ui/alert-dialog";
 import { Input } from "@/src/components/ui/input";
+
 import { useToast } from "@/src/components/ui/use-toast";
 import { ToastAction } from "@/src/components/ui/toast";
+
 import MyPlaylistsSkeleton from "@/src/components/MyPlaylistsSkeleton";
 import { Skeleton } from "@/src/components/ui/skeleton";
 
@@ -65,13 +64,8 @@ function Playlists() {
     } else {
       toast({
         variant: "destructive",
-        title: (
-          <p className="font-bold">
-            Please enter the name of your new playlist
-          </p>
-        ),
+        title: "Please enter the name of your new playlist",
         description: "The name of the playlist cannot be empty",
-        action: <ToastAction altText="---">OK</ToastAction>,
       });
     }
   };
@@ -103,7 +97,7 @@ function Playlists() {
                 borderRadius: "50%",
               }}
             />
-            <Skeleton className="h-4 w-[90px] mt-4 mx-auto"/>
+            <Skeleton className="h-4 w-[90px] mt-4 mx-auto" />
           </>
         ) : (
           <>
@@ -125,9 +119,11 @@ function Playlists() {
             <AlertDialogTrigger asChild>
               <Button>Create New Playlist</Button>
             </AlertDialogTrigger>
-            <AlertDialogContent style={{
-              width: '25rem',
-            }}>
+            <AlertDialogContent
+              style={{
+                width: "25rem",
+              }}
+            >
               <AlertDialogHeader>
                 <AlertDialogDescription className="mb-2 mt-2">
                   <Input

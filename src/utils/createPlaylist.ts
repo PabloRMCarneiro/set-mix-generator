@@ -46,7 +46,7 @@ export const handleCreatePlaylist = async (
         },
         body: JSON.stringify({
           name: playlistName,
-          description: "Created with Set Mix Generator",
+          description: "Created with Mixingfy",
           public: true,
         }),
       }

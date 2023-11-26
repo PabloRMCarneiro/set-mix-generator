@@ -6,12 +6,11 @@ import { NextAuthProvider } from "@/src/providers/NextAuthProvider";
 import { ThemeProvider } from "@/src/components/theme-provider";
 import { Theme } from "@radix-ui/themes";
 
-
 export const metadata: Metadata = {
   title: "Set Mix Genearate",
 };
 
-import { Toaster } from "@/src/components/ui/toaster"
+import { Toaster } from "@/src/components/ui/toaster";
 
 export default function RootLayout({
   children,
@@ -22,7 +21,6 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <main>
-        <Toaster />
           <NextAuthProvider>
             <Theme>
               <ThemeProvider
@@ -35,6 +33,7 @@ export default function RootLayout({
               </ThemeProvider>
             </Theme>
           </NextAuthProvider>
+          <Toaster />
         </main>
       </body>
     </html>

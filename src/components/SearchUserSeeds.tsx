@@ -40,8 +40,9 @@ import {
   TableBody,
   TableCell,
 } from "@/src/components/ui/table";
-import { useNotifications } from "@/src/providers/NotificationContext";
 import { TooltipGeneral } from "./TooltipGeneral";
+import { useToast } from "./ui/use-toast";
+import { ToastAction } from "./ui/toast"; 
 
 type SearchSeeds = {
   query: string;
@@ -56,7 +57,7 @@ function SearchUserSeeds({
   setSeeds: Function;
 }) {
   const session = useSession();
-  const { notify } = useNotifications();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<any>(null);
 
@@ -89,7 +90,8 @@ function SearchUserSeeds({
         setSearch,
         setIsLoading,
         setErrorMsg,
-        searchSeeds.type
+        searchSeeds.type,
+        true,
       );
     }
   }, [searchButton, searchSeeds.query, searchSeeds.type, session.data]);
@@ -261,6 +263,9 @@ function SearchUserSeeds({
                               className="hover:cursor-pointer"
                               onClick={() => {
                                 if (seeds.ids.length < 5) {
+                                  if (searchSeeds.type === "artist") {
+                                    item.id = item.id + "*";
+                                  }
                                   setSeeds({
                                     ids: [...seeds.ids, item.id],
                                     thumbs: [
@@ -273,7 +278,11 @@ function SearchUserSeeds({
                                     ],
                                   });
                                 } else {
-                                  notify("You can only add 5 seeds", "error");
+                                  toast({
+                                    variant: 'destructive',
+                                    title: 'You can only add 5 seeds',
+                                    description: 'Please add only 5 seeds',
+                                  })
                                 }
                               }}
                             />
