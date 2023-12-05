@@ -102,7 +102,7 @@ function SearchUserSeeds({
       <DropdownMenu>
         <DropdownMenuTrigger>
           <TooltipGeneral
-            description="A seed is a track or artist that when selected, will generate search results similar to itself. You can use the seeds input section below to search for tracks and artists to use as seeds. You may select up to five seeds with any combination of tracks and artists. If you search without selecting any seeds, 5 track seeds will be selected for you randomly, yielding very random results."
+            description="A seed is a track or artist that when selected, will generate search results similar to itself. You can use the seeds input section below to search for tracks and artists to use as seeds. You may select up to five seeds with any combination of tracks and artists. If you search without selecting any seeds, 5 track seeds will be selected for you randomly, yielding very random results ."
             component={<Button variant="outline">Seeds</Button>}
           />
         </DropdownMenuTrigger>
