@@ -179,7 +179,7 @@ function Playlists() {
                     <PlusIcon className="w-6 h-6 text-white" />
                   </div>
                 )} */}
-                <img
+                {/* <img
                   src={playlist.images[0].url}
                   alt={playlist.name}
                   className="mx-auto mt-6" // "PRYAN @ Analog Daydreams Vol 2"
@@ -188,7 +188,7 @@ function Playlists() {
                     width: "80%",
                     height: "auto",
                   }}
-                />
+                /> */}
                 <p className="text-center font-black pt-4">
                   {playlist.name.length > 18
                     ? playlist.name.slice(0, 18) + "..."

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -46,6 +46,8 @@ import {
 import { addUserPlaylist } from "@/src/utils/addUserPlaylist";
 import { useSelector, useDispatch } from "react-redux";
 import { TooltipGeneral } from "./TooltipGeneral";
+import { useToast } from "@/src/components/ui/use-toast";
+import { cn } from "@/lib/utils";
 
 function ShortTable({
   setSearchSong,
@@ -65,6 +67,8 @@ function ShortTable({
   current_track?: AudioSearch;
 }) {
   const [isRepeatedMusic, setIsRepeatedMusic] = useState<boolean>(false);
+  const [notification, setNotification] = useState<string>('');
+  const { toast } = useToast();
 
   const handleAddMusic = (track: AudioSearch) => {
     const _isRepeatedMusic = userPlaylist.some(
@@ -76,12 +80,26 @@ function ShortTable({
       return;
     } else {
       setIsRepeatedMusic(false);
-      current_track
-        ? addUserPlaylist(track, setUserPlaylist, current_track.id)
-        : addUserPlaylist(track, setUserPlaylist);
+      /* current_track
+        ? addUserPlaylist(track, setUserPlaylist, setNotification, current_track.id)
+        : addUserPlaylist(track, setUserPlaylist, setNotification); */
+      addUserPlaylist(track, setUserPlaylist, setNotification);
       setSearchSong && setSearchSong("");
     }
   };
+
+  useEffect(() => {
+    if (notification) {
+      toast({
+        className: cn(
+          'bottom-3 left-3 flex fixed md:max-w-[420px] bg-green-700'
+        ),
+        // title: "Music added to playlist",
+        description: notification,
+      });
+      setNotification('');
+    }
+  }, [notification, toast]);
 
   return (
     <>
@@ -102,6 +120,7 @@ function ShortTable({
           </AlertDialogContent>
         </AlertDialog>
       )}
+
       <Table className="max-h-60 w-full">
         <TableHeader>
           <TableRow>

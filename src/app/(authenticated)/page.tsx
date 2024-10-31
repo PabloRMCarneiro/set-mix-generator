@@ -169,7 +169,7 @@ export default function Home() {
         </div>
         <Separator className="my-14" />
         <div className="w-7/12 mx-auto flex-grow justify-center items-center justify-center items-center">
-          {/* <AccordionCharts userPlaylist={userPlaylist} /> */}
+          <AccordionCharts userPlaylist={userPlaylist} />
         </div>
       </div>
     </>

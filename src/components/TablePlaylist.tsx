@@ -150,7 +150,7 @@ export default function TablePlaylist({
             }
           }
         >
-          <div className="block w-5/12">
+          <div className="block w-6/12">
             <TooltipGeneral
               component={
                 <input
@@ -244,7 +244,7 @@ export default function TablePlaylist({
           <TableHeader>
             <TableRow>
               <TableHead className="pl-5">#</TableHead>
-              <TableHead>Thumbnail</TableHead>
+              <TableHead>Cover</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>BPM</TableHead>
               <TableHead className="pr-5">Key</TableHead>
@@ -336,13 +336,13 @@ export default function TablePlaylist({
                             <TableCell>
                               <div>
                                 <p className="font-extrabold">
-                                  {track.name.length > 40
-                                    ? track.name.slice(0, 40) + "..."
+                                  {track.name.length > 45
+                                    ? track.name.slice(0, 45) + "..."
                                     : track.name}
                                 </p>
                                 <p className="opacity-50">
-                                  {track.artists.length > 40
-                                    ? track.artists.slice(0, 40) + "..."
+                                  {track.artists.length > 45
+                                    ? track.artists.slice(0, 45) + "..."
                                     : track.artists}
                                 </p>
                               </div>

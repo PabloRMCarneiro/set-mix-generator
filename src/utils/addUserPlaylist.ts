@@ -10,7 +10,8 @@ import { AudioSearch } from "./types";
 export const addUserPlaylist = (
   trackToAdd: AudioSearch,                
   setUserPlaylist: Function,
-  trackId?: string                       
+  setNotification: Function,
+  trackId?: string,
 ) => {
   const localUserPlaylist: AudioSearch[] = JSON.parse(localStorage.getItem("userPlaylist") || "[]");
 
@@ -28,7 +29,9 @@ export const addUserPlaylist = (
   } */
 
   localStorage.setItem("userPlaylist", JSON.stringify(localUserPlaylist));
-
+  
+  setNotification(`${trackToAdd.name} - ${trackToAdd.artists}  added to your playlist`)
+  
   setUserPlaylist((prevState: AudioSearch[]) => {
     /* if (false) {
       const index = prevState.findIndex(track => track.id === trackId);
@@ -45,4 +48,5 @@ export const addUserPlaylist = (
       return [...prevState, trackToAdd];
     // }
   });
+
 };
